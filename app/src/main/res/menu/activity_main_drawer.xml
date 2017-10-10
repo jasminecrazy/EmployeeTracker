@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_location"
+            android:icon="@drawable/location"
+            android:title="Vị trí của tôi" />
+        <item
+            android:id="@+id/nav_dayoff"
+            android:icon="@drawable/ic_menu_send"
+            android:title="Đơn xin nghỉ" />
+        <item
+            android:id="@+id/nav_comelate"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Xin đi trễ" />
+
+    </group>
+
+
+
+</menu>

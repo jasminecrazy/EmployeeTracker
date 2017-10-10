@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">EmployeeTracker</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_repassword">RePassword</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="lbl_forgot_password">Forgot password?</string>
+</resources>
