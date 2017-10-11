@@ -2,8 +2,10 @@ package com.suong.inf
 
 import com.suong.model.Employee
 import com.suong.model.Result123
+import com.suong.model.sendLocation
 import io.reactivex.Observable
 import okhttp3.OkHttpClient
+import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -17,6 +19,9 @@ import java.util.concurrent.TimeUnit
 interface IEmployee {
     @POST("admin/api/login")
     fun login(@Body employee: Employee):Observable<Result123>
+
+    @POST("admin/api/location")
+    fun  sendLocation(@Body location:sendLocation ):Observable<ResponseBody>
 
     companion object Factory {
         fun create(): IEmployee {

@@ -17,11 +17,13 @@
         android:paddingTop="250dp">
 
         <EditText
+            android:text="Jackson15"
             android:id="@+id/edt_name"
             style="@style/edt_style"
             android:hint="@string/hint_username"
             android:inputType="textNoSuggestions|textVisiblePassword" />
         <EditText
+            android:text="123456"
             android:id="@+id/edt_password"
             style="@style/edt_style"
             android:hint="@string/hint_password"

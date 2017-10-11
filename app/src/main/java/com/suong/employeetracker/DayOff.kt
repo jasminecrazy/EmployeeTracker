@@ -13,10 +13,6 @@ import java.net.URL
 class DayOff : Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view:View = layoutInflater.inflate(R.layout.fragment_absence,container,false)
-        addControl()
         return view
-    }
-    fun addControl(){
-         val result = URL("<api call>").readText()
     }
 }
