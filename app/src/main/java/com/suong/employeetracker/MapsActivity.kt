@@ -2,7 +2,6 @@ package com.suong.employeetracker
 
 import android.content.pm.PackageManager
 import android.location.*
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
@@ -10,22 +9,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import com.example.nbhung.testcallapi.DateOfDate
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.suong.employeetracker.R.drawable.user
-import com.suong.model.Employee
-import com.suong.model.SharedPreferencesManager
-import com.suong.model.sendEmployeess
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import java.io.IOException
 import java.util.*
 
@@ -38,15 +28,14 @@ class MapsActivity :Fragment(), OnMapReadyCallback {
     private var locationManager: LocationManager? = null
     private var locationListener: LocationListener? = null
     val IEmployee by lazy {
-        com.suong.inf.IEmployee.create()
+        com.suong.Api.ApiApp.create()
     }
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = layoutInflater.inflate(R.layout.activity_maps, container, false)
         locationManager = activity.getSystemService(android.content.Context.LOCATION_SERVICE) as LocationManager
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        ActivityCompat.requestPermissions(activity, arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION), 123)
         (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
-        sendLocation()
+      //  sendLocation()
         return view
     }
 
@@ -152,23 +141,5 @@ class MapsActivity :Fragment(), OnMapReadyCallback {
         if (locationListener != null) locationManager!!.removeUpdates(locationListener)
 
     }
-   //gửi lat long api
-    fun sendLocation(){
-      Log.e("date of date", DateOfDate.getTimeGloba())
-       val response = IEmployee
-       val userLogin =com.suong.model.sendLocation(sendEmployeess(SharedPreferencesManager.getIdUser(activity)!!.toInt()), 107.6457984,10.7942232,"1234567","2016-11-02T07:33:12.208Z","2017-09-19")
-       response.sendLocation(userLogin)
-               .subscribeOn(Schedulers.io())
-               .observeOn(AndroidSchedulers.mainThread())
-               .subscribe({ result ->
-                   Toast.makeText(activity, "send success", Toast.LENGTH_SHORT).show()
-                   //     Log.e("result", result.id.toString())
-
-
-               }, { error ->
-                   Log.e("error",error.message)
-                   Toast.makeText(activity, "send Failed", Toast.LENGTH_SHORT).show()
-               })
-   }
 
 }

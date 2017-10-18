@@ -9,5 +9,6 @@ data class sendLocation(
         val latitude:Double,
         val locationName:String,
         val locationTime:String,
-        val date:String
+        val date:String,
+        val picture:String?
 )

@@ -46,10 +46,23 @@ class DateOfDate {
                 minuteNew = "0" + minute
             } else minuteNew = minute.toString()
             val getGlobla: String = getDay + "T" + hourNew + ":" + minuteNew + ":"+second+".00+07:00"
-//            val fmd = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
-//            val date = fmd.parse(getGlobla)
-//            Log.e("jalsjdljalsjdlajls", date.toString())
+
             return getGlobla
+        }
+        fun getTimeNow():String{
+            val c = Calendar.getInstance(TimeZone.getTimeZone("GMT+7:00"))
+            val hour = c.get(Calendar.HOUR_OF_DAY)
+            val minute = c.get(Calendar.MINUTE)
+            val second=c.get(Calendar.SECOND)
+            var hourNew: String
+            var minuteNew: String
+            if (hour < 10) {
+                hourNew = "0" + 1
+            } else hourNew = hour.toString()
+            if (minute < 10) {
+                minuteNew = "0" + minute
+            } else minuteNew = minute.toString()
+            return hourNew+":"+minuteNew+":"+second
         }
     }
 }

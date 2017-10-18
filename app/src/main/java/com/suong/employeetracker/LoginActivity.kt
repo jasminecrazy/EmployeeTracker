@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.Toast
+import com.example.nbhung.testcallapi.DateOfDate
 import com.suong.model.Employee
 import com.suong.model.SharedPreferencesManager
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -13,23 +15,25 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
-    private lateinit var dialog:ProgressDialog
+    private lateinit var dialog: ProgressDialog
     val IEmployee by lazy {
-        com.suong.inf.IEmployee.create()
+        com.suong.Api.ApiApp.create()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        dialog=ProgressDialog(this)
+        dialog = ProgressDialog(this)
         dialog.setMessage("Please wait")
         dialog.setTitle("Loading")
         dialog.setCancelable(false)
-        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.INTERNET), 123)
+        Log.e("get current time",DateOfDate.getTimeNow())
+        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.INTERNET,android.Manifest.permission.WRITE_EXTERNAL_STORAGE,android.Manifest.permission.READ_EXTERNAL_STORAGE), 123)
         btn_login.setOnClickListener {
+       //         startActivity()
             if (edt_name != null && edt_password != null) {
                 callApi(edt_name.text.toString(), edt_password.text.toString())
-               dialog.show()
+                dialog.show()
             } else {
                 Toast.makeText(applicationContext, "error", Toast.LENGTH_SHORT).show()
             }
