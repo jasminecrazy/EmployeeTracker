@@ -16,6 +16,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.suong.employeetracker.Utils.convertAddr
 import java.io.IOException
 import java.util.*
 
@@ -83,30 +84,30 @@ class MapsActivity :Fragment(), OnMapReadyCallback {
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(locationMap.latitude, locationMap.longitude), 15f))
         val latlng: LatLng = LatLng(locationMap.latitude, locationMap.longitude)
         Log.d("location",latlng.toString())
-        Log.e("addddđ", convertAddr(latlng))
-        mMap.addMarker(MarkerOptions().title(convertAddr(latlng)).position(LatLng(locationMap.latitude, locationMap.longitude))).showInfoWindow()
+        Log.e("addddđ", Utils.convertAddr(latlng,activity))
+        mMap.addMarker(MarkerOptions().title(Utils.convertAddr(latlng,activity)).position(LatLng(locationMap.latitude, locationMap.longitude))).showInfoWindow()
 
 
     }
 
-    fun convertAddr(lat: LatLng): String {
-        var geocoder = Geocoder(activity, Locale.getDefault())
-
-        var addresses: List<Address>? = null
-        try {
-            addresses = geocoder.getFromLocation(lat.latitude, lat.longitude, 1)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        var streetAddress: String = ""
-        if (addresses != null) {
-            val returnedAddress = addresses[0]
-            streetAddress = returnedAddress.getAddressLine(0)
-
-        }
-        Log.e("add", streetAddress)
-        return streetAddress
-    }
+//    fun convertAddr(lat: LatLng): String {
+//        var geocoder = Geocoder(activity, Locale.getDefault())
+//
+//        var addresses: List<Address>? = null
+//        try {
+//            addresses = geocoder.getFromLocation(lat.latitude, lat.longitude, 1)
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//        }
+//        var streetAddress: String = ""
+//        if (addresses != null) {
+//            val returnedAddress = addresses[0]
+//            streetAddress = returnedAddress.getAddressLine(0)
+//
+//        }
+//        Log.e("add", streetAddress)
+//        return streetAddress
+//    }
 
 
     fun eventUpdateLocation() {

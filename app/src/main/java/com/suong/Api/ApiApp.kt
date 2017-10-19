@@ -30,7 +30,6 @@ interface ApiApp {
     @GET("admin/api/shiftwork")
     fun getshiftwork():Observable<List<ResponseShiftWork>>
 
-    //  fun  sendAbsense(@Body senabsense: sendAbsenseToSever):Observable<ResponseBody>
     companion object Factory {
         fun create(): ApiApp {
             val okhttp = OkHttpClient.Builder()
