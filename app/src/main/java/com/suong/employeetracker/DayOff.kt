@@ -190,7 +190,7 @@ class DayOff : Fragment(), OnMapReadyCallback {
 
     fun sendLocation() {
 
-        var myAdd: String = Utils.convertAddr(LatLng(location!!.longitude, location!!.latitude), activity)
+        var myAdd: String = Utils.convertAddr(LatLng(location!!.latitude, location!!.longitude), activity)
         Log.e("address", myAdd)
         val response = IEmployee
         val userLogin = com.suong.model.sendLocation(sendEmployeess(SharedPreferencesManager.getIdUser(activity)!!.toInt()), location!!.longitude, location!!.latitude, myAdd, DateOfDate.getTimeGloba(), DateOfDate.getDay(), "imgUser/" + idImg)

@@ -29,7 +29,7 @@ object Utils {
         }
         var streetAddress: String = ""
         if (addresses != null) {
-            val returnedAddress = addresses[0]
+            var returnedAddress = addresses[0]
             streetAddress = returnedAddress.getAddressLine(0)
 
         }
