@@ -6,16 +6,20 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_location"
-            android:icon="@drawable/location"
+            android:icon="@mipmap/ic_location"
             android:title="Vị trí của tôi" />
         <item
             android:id="@+id/nav_dayoff"
-            android:icon="@drawable/ic_menu_send"
-            android:title="Đơn xin nghỉ" />
+            android:icon="@mipmap/ic_timesheet"
+            android:title="Chấm công" />
         <item
             android:id="@+id/nav_comelate"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Xin đi trễ" />
+            android:icon="@mipmap/ic_clock"
+            android:title="Xin nghỉ" />
+        <item
+            android:id="@+id/nav_myform"
+            android:icon="@mipmap/ic_list"
+            android:title="Đơn xin nghỉ" />
 
     </group>
 

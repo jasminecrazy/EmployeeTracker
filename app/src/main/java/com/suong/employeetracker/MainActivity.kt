@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
-        changeFramgent(MapsActivity())
+       changeFramgent(MapsActivity)
     }
 
     override fun onBackPressed() {
@@ -62,6 +62,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_comelate -> {
                 changeFramgent(ComeLate())
+            }
+            R.id.nav_myform -> {
+                changeFramgent(MyForm())
             }
         }
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EmployeeTracker</string>
+    <string name="app_name">Employee tracker</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -12,4 +12,9 @@
     <string name="login">Login</string>
     <string name="email">Email</string>
     <string name="lbl_forgot_password">Forgot password?</string>
+    <string name="myLocation">Vị trí của tôi</string>
+    <string name="myForm">Đơn xin nghỉ</string>
+    <string name="absence">Xin nghỉ</string>
+    <string name="timeSheet">Chấm công</string>
+
 </resources>
