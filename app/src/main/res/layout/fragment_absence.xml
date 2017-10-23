@@ -22,11 +22,12 @@
             android:text="Send" />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/image"
+    <FrameLayout
+        android:id="@+id/preview"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:src="@drawable/camera" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
 
     <fragment xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
@@ -34,6 +35,6 @@
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:layout_above="@id/lllayout"
-        android:layout_below="@id/image"
+        android:layout_below="@id/preview"
         tools:context="com.suong.employeetracker.MapsActivity" />
 </RelativeLayout>

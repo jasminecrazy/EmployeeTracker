@@ -8,10 +8,7 @@ import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Headers
-import retrofit2.http.POST
+import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -28,7 +25,10 @@ interface ApiApp {
     fun sendAbsense(@Body senabsense: sendAbsenseToSever): Observable<ResponseBody>
 
     @GET("admin/api/shiftwork")
-    fun getshiftwork():Observable<List<ResponseShiftWork>>
+    fun getshiftwork(): Observable<List<ResponseShiftWork>>
+
+    @GET("admin/api/absence/{id}")
+    fun getListDayAbsence(@Path("id") id: String): Observable<ResponseAbsenceForm>
 
     companion object Factory {
         fun create(): ApiApp {

@@ -53,6 +53,7 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(applicationContext, "Login Success", Toast.LENGTH_SHORT).show()
                     //     Log.e("result", result.id.toString())
                     SharedPreferencesManager.setIdUser(applicationContext, result.id.toString())
+                    SharedPreferencesManager.setEmployeeId(applicationContext, result.id.toString())
                     dialog.dismiss()
                     startActivity()
                 }, { error ->

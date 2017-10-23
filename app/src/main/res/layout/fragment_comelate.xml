@@ -35,7 +35,6 @@
             android:hint="Lý do xin nghỉ"
             android:inputType="textMultiLine|textNoSuggestions"
             android:lines="8"
-
             android:maxLines="10"
             android:minLines="6"
             android:padding="10dp"

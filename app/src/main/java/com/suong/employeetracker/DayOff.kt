@@ -1,27 +1,25 @@
+@file:Suppress("SENSELESS_COMPARISON")
+
 package com.suong.employeetracker
 
 import android.annotation.SuppressLint
-import android.app.Activity.RESULT_OK
+import android.app.ProgressDialog
+import android.content.ContentValues.TAG
+import android.content.Context
+import android.content.pm.PackageManager
+import android.hardware.Camera
+import android.location.Location
+import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_absence.view.*
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.widget.ImageView
-import java.io.ByteArrayOutputStream
-import android.graphics.Bitmap.CompressFormat
-import android.location.Location
-import android.location.LocationManager
-import android.os.Environment
-import android.provider.MediaStore
-import android.support.v4.app.ActivityCompat
-import android.util.Log
 import android.widget.Toast
 import com.example.nbhung.testcallapi.DateOfDate
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -30,29 +28,27 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.UploadTask
-import com.suong.employeetracker.R.drawable.location
 import com.suong.model.SharedPreferencesManager
 import com.suong.model.sendEmployeess
-import com.suong.model.sendLocation
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_absence.view.*
 import java.io.File
-import java.io.IOException
-import java.text.SimpleDateFormat
+import java.io.FileOutputStream
 import java.util.*
 
 
+@Suppress("DEPRECATION")
 /**
  * Created by Thu Suong on 10/6/2017.
  */
 class DayOff : Fragment(), OnMapReadyCallback {
-
+    private lateinit var dialog: ProgressDialog
+    private var mCamera: Camera? = null
+    private var mPreview: CameraPreview? = null
     private lateinit var mMap: GoogleMap
     private var locationManager: LocationManager? = null
     val CAMERA_REQUEST_CODE = 110
@@ -62,7 +58,6 @@ class DayOff : Fragment(), OnMapReadyCallback {
     private lateinit var storage: FirebaseStorage
     private lateinit var storageReference: StorageReference
     private lateinit var idImg: String
-    private lateinit var file: Uri
     private lateinit var mCurrentPhotoPath: String
     private var location: Location? = null
     val IEmployee by lazy {
@@ -71,6 +66,11 @@ class DayOff : Fragment(), OnMapReadyCallback {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = layoutInflater.inflate(R.layout.fragment_absence, container, false)
+        //dialog
+        dialog = ProgressDialog(activity)
+        dialog.setMessage("Please wait")
+        dialog.setTitle("Loading")
+        dialog.setCancelable(false)
         //map
         locationManager = activity.getSystemService(android.content.Context.LOCATION_SERVICE) as LocationManager
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -82,18 +82,20 @@ class DayOff : Fragment(), OnMapReadyCallback {
         //
 
         //init view
-        imageViewss = view.findViewById(R.id.image)
+        // Create an instance of Camera
+        mCamera = getCameraInstance()
+
+        // Create our Preview view and set it as the content of our activity.
+        mPreview = CameraPreview(activity, this.mCamera!!)
+        view.preview.addView(mPreview)
         //
         //event
         view.btnSend.setOnClickListener {
-            sendPhoto()
-        }
-        imageViewss.setOnClickListener {
-            takeApicture()
-        }
-        //
+            //take a picture
+           // dialog.show()
+            mCamera!!.takePicture(null, null, mPicture)
 
-
+        }
         return view
     }
 
@@ -121,49 +123,63 @@ class DayOff : Fragment(), OnMapReadyCallback {
 
     }
 
-    fun takeApicture() {
-        val cameraIntent = Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE)
-        file = Uri.fromFile(getFile())
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, file)
-        startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE)
+    /** Check if this device has a camera  */
+    private fun checkCameraHardware(context: Context): Boolean {
+        return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)
     }
+
+    /** A safe way to get an instance of the Camera object.  */
+    fun getCameraInstance(): Camera? {
+        var c: Camera? = null
+        try {
+            c = Camera.open() // attempt to get a Camera instance
+        } catch (e: Exception) {
+            // Camera is not available (in use or does not exist)
+        }
+
+        return c // returns null if camera is unavailable
+    }
+
+    private val mPicture: Camera.PictureCallback = Camera.PictureCallback(
+            { bytes: ByteArray, camera: Camera ->
+                val fileTam: File = getFile()
+                imageUri = Uri.parse(fileTam.toString())
+                Log.e("link", imageUri.path)
+                if (fileTam == null) {
+                    Log.d(TAG, "Error creating media file, check storage permissions")
+                }
+                val outPut = FileOutputStream(fileTam)
+                outPut.write(bytes)
+                outPut.close()
+                sendPhoto()
+            }
+
+    )
 
     @SuppressLint("SimpleDateFormat")
     fun getFile(): File {
-        var folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "CameraDemo")
+        val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "CameraDemo")
         if (!folder.exists()) {
             folder.mkdir()
         }
 
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val imageFileName = "JPEG_" + timeStamp + "_"
-        var image_file: File? = null
-        try {
-            image_file = File.createTempFile(imageFileName, ".jpg", folder)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        mCurrentPhotoPath = image_file!!.absolutePath
+//        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+//        val imageFileName = "JPEG_" + timeStamp + "_"
+//        var image_file: File? = null
+//        try {
+//            image_file = File.createTempFile(imageFileName, ".jpg", folder)
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//        }
+//        mCurrentPhotoPath = image_file!!.absolutePath
 
-        return image_file
+        val mediaFile = File(String.format(folder.toString() + File.separator + "%d.jpg", System.currentTimeMillis()))
+
+        return mediaFile
     }
 
     fun checkGps(): Boolean {
         return locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == RESULT_OK) {
-            if (requestCode == CAMERA_REQUEST_CODE) {
-//                val bitmap: Bitmap = data.extras.get("data") as Bitmap
-//                imageViewss.setImageBitmap(bitmap)
-                val options = BitmapFactory.Options()
-                val bm: Bitmap = BitmapFactory.decodeFile(file.path, options)
-                Log.e("jalsl", file.path)
-                imageViewss.setImageBitmap(bm)
-            }
-        }
-
     }
 
     fun moveLocation(locationMap: Location) {
@@ -176,9 +192,10 @@ class DayOff : Fragment(), OnMapReadyCallback {
     }
 
     fun updateImageToFirebase() {
+
         idImg = "user" + UUID.randomUUID()
         var ref: StorageReference = storageReference.child("imgUser/" + idImg)
-        ref.putFile(file).addOnSuccessListener {
+        ref.putFile(imageUri).addOnSuccessListener {
             Log.e("update", "Success")
         }
                 .addOnFailureListener(OnFailureListener {
@@ -200,6 +217,7 @@ class DayOff : Fragment(), OnMapReadyCallback {
                 .subscribe({ result ->
                     Toast.makeText(activity, "send success", Toast.LENGTH_SHORT).show()
                     //     Log.e("result", result.id.toString())
+                    dialog.dismiss()
 
 
                 }, { error ->
