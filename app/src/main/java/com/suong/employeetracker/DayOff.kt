@@ -143,7 +143,8 @@ class DayOff : Fragment(), OnMapReadyCallback {
     private val mPicture: Camera.PictureCallback = Camera.PictureCallback(
             { bytes: ByteArray, camera: Camera ->
                 val fileTam: File = getFile()
-                imageUri = Uri.parse(fileTam.toString())
+                imageUri = Uri.fromFile(fileTam)
+                var filess= File(imageUri.toString())
                 Log.e("link", imageUri.path)
                 if (fileTam == null) {
                     Log.d(TAG, "Error creating media file, check storage permissions")
@@ -195,7 +196,7 @@ class DayOff : Fragment(), OnMapReadyCallback {
 
         idImg = "user" + UUID.randomUUID()
         var ref: StorageReference = storageReference.child("imgUser/" + idImg)
-        ref.putFile(imageUri).addOnSuccessListener {
+        ref.putFile(imageUri!!).addOnSuccessListener {
             Log.e("update", "Success")
         }
                 .addOnFailureListener(OnFailureListener {

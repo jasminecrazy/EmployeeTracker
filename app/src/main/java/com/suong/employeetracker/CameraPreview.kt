@@ -113,13 +113,12 @@ open class CameraPreview(context: Context, private var mCamera: Camera) : Surfac
             val angle: Int
             var activity: Activity = context as Activity
             val display = activity.windowManager.defaultDisplay
-            when (display.rotation) {
-                ROTATION_0 // This is display orientation
-                -> angle = 90 // This is camera orientation
-                ROTATION_90 -> angle = 0
-                ROTATION_180 -> angle = 270
-                ROTATION_270 -> angle = 180
-                else -> angle = 90
+            angle = when (display.rotation) {
+                ROTATION_0 -> 90 // This is camera orientation
+                ROTATION_90 -> 0
+                ROTATION_180 -> 270
+                ROTATION_270 -> 180
+                else -> 90
             }
             Log.v("LOG_TAG", "angle: " + angle)
             mCamera.setDisplayOrientation(angle)

@@ -30,13 +30,17 @@ class LoginActivity : AppCompatActivity() {
         Log.e("get current time",DateOfDate.getTimeNow())
         ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.INTERNET,android.Manifest.permission.WRITE_EXTERNAL_STORAGE,android.Manifest.permission.READ_EXTERNAL_STORAGE), 123)
         btn_login.setOnClickListener {
-       //         startActivity()
-            if (edt_name != null && edt_password != null) {
-                callApi(edt_name.text.toString(), edt_password.text.toString())
-                dialog.show()
-            } else {
-                Toast.makeText(applicationContext, "error", Toast.LENGTH_SHORT).show()
+            if (Utils.isNetWorkConnnected(applicationContext)){
+                if (edt_name != null && edt_password != null) {
+                    callApi(edt_name.text.toString(), edt_password.text.toString())
+                    dialog.show()
+                } else {
+                    Toast.makeText(applicationContext, "wrong pass or email", Toast.LENGTH_SHORT).show()
+                }
+            }else{
+                Toast.makeText(applicationContext, "no connect internet", Toast.LENGTH_SHORT).show()
             }
+
 
         }
 

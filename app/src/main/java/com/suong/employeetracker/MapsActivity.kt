@@ -1,7 +1,9 @@
 package com.suong.employeetracker
 
 import android.content.pm.PackageManager
-import android.location.*
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
@@ -9,16 +11,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.suong.employeetracker.Utils.convertAddr
-import java.io.IOException
-import java.util.*
 
 class MapsActivity :Fragment(), OnMapReadyCallback {
 
@@ -120,7 +118,7 @@ class MapsActivity :Fragment(), OnMapReadyCallback {
             }
 
             override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
-
+                   eventUpdateLocation()
             }
 
             override fun onProviderEnabled(p0: String?) {
