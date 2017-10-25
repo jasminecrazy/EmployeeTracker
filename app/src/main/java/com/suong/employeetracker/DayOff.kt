@@ -5,7 +5,6 @@ package com.suong.employeetracker
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.ContentValues.TAG
-import android.content.Context
 import android.content.pm.PackageManager
 import android.hardware.Camera
 import android.location.Location
@@ -92,7 +91,7 @@ class DayOff : Fragment(), OnMapReadyCallback {
         //event
         view.btnSend.setOnClickListener {
             //take a picture
-           // dialog.show()
+            dialog.show()
             mCamera!!.takePicture(null, null, mPicture)
 
         }
@@ -121,11 +120,6 @@ class DayOff : Fragment(), OnMapReadyCallback {
         } else updateImageToFirebase()
 
 
-    }
-
-    /** Check if this device has a camera  */
-    private fun checkCameraHardware(context: Context): Boolean {
-        return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)
     }
 
     /** A safe way to get an instance of the Camera object.  */
@@ -164,15 +158,6 @@ class DayOff : Fragment(), OnMapReadyCallback {
             folder.mkdir()
         }
 
-//        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-//        val imageFileName = "JPEG_" + timeStamp + "_"
-//        var image_file: File? = null
-//        try {
-//            image_file = File.createTempFile(imageFileName, ".jpg", folder)
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//        }
-//        mCurrentPhotoPath = image_file!!.absolutePath
 
         val mediaFile = File(String.format(folder.toString() + File.separator + "%d.jpg", System.currentTimeMillis()))
 
@@ -184,7 +169,7 @@ class DayOff : Fragment(), OnMapReadyCallback {
     }
 
     fun moveLocation(locationMap: Location) {
-
+        mMap.clear()
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(locationMap.latitude, locationMap.longitude), 15f))
         val latlng: LatLng = LatLng(locationMap.latitude, locationMap.longitude)
         mMap.addMarker(MarkerOptions().title(Utils.convertAddr(latlng, activity)).position(LatLng(locationMap.latitude, locationMap.longitude))).showInfoWindow()
@@ -224,7 +209,12 @@ class DayOff : Fragment(), OnMapReadyCallback {
                 }, { error ->
                     Log.e("error", error.message)
                     Toast.makeText(activity, "send Failed", Toast.LENGTH_SHORT).show()
+                    dialog.dismiss()
                 })
+        refreshCamera()
+    }
+    fun refreshCamera(){
+        mPreview!!.refreshCamera(mCamera!!)
     }
 
     fun updateLocation() {

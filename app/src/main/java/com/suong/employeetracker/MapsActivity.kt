@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -18,7 +19,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
-class MapsActivity :Fragment(), OnMapReadyCallback {
+class MapsActivity : Fragment(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     val LOCATION_UPDATE_MIN_DISTANCE: Float = 1f
@@ -29,12 +30,13 @@ class MapsActivity :Fragment(), OnMapReadyCallback {
     val IEmployee by lazy {
         com.suong.Api.ApiApp.create()
     }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = layoutInflater.inflate(R.layout.activity_maps, container, false)
         locationManager = activity.getSystemService(android.content.Context.LOCATION_SERVICE) as LocationManager
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
-      //  sendLocation()
+        //  sendLocation()
         return view
     }
 
@@ -49,6 +51,7 @@ class MapsActivity :Fragment(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        mMap.clear()
         mMap.isMyLocationEnabled = true
         // Add a marker in Sydney and move the camera
 
@@ -71,19 +74,21 @@ class MapsActivity :Fragment(), OnMapReadyCallback {
 
             }
         }
+        if (location == null) Toast.makeText(activity, "Please enable GPS", Toast.LENGTH_SHORT).show()
         eventUpdateLocation()
     }
+
     fun checkGps(): Boolean {
         return locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
     fun updateLocation(locationMap: Location) {
-
+        mMap.clear()
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(locationMap.latitude, locationMap.longitude), 15f))
         val latlng: LatLng = LatLng(locationMap.latitude, locationMap.longitude)
-        Log.d("location",latlng.toString())
-        Log.e("addddđ", Utils.convertAddr(latlng,activity))
-        mMap.addMarker(MarkerOptions().title(Utils.convertAddr(latlng,activity)).position(LatLng(locationMap.latitude, locationMap.longitude))).showInfoWindow()
+        Log.d("location", latlng.toString())
+        Log.e("addddđ", Utils.convertAddr(latlng, activity))
+        mMap.addMarker(MarkerOptions().title(Utils.convertAddr(latlng, activity)).position(LatLng(locationMap.latitude, locationMap.longitude))).showInfoWindow()
 
 
     }
@@ -118,7 +123,7 @@ class MapsActivity :Fragment(), OnMapReadyCallback {
             }
 
             override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
-                   eventUpdateLocation()
+                eventUpdateLocation()
             }
 
             override fun onProviderEnabled(p0: String?) {
