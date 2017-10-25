@@ -5,19 +5,20 @@ package com.suong.employeetracker
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.hardware.Camera
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Environment
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.Toast
 import com.example.nbhung.testcallapi.DateOfDate
@@ -57,7 +58,6 @@ class DayOff : Fragment(), OnMapReadyCallback {
     private lateinit var storage: FirebaseStorage
     private lateinit var storageReference: StorageReference
     private lateinit var idImg: String
-    private lateinit var mCurrentPhotoPath: String
     private var location: Location? = null
     val IEmployee by lazy {
         com.suong.Api.ApiApp.create()
@@ -65,6 +65,8 @@ class DayOff : Fragment(), OnMapReadyCallback {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = layoutInflater.inflate(R.layout.fragment_absence, container, false)
+        //set setOrientationDetective
+        setOrientationDetective()
         //dialog
         dialog = ProgressDialog(activity)
         dialog.setMessage("Please wait")
@@ -113,6 +115,40 @@ class DayOff : Fragment(), OnMapReadyCallback {
         }
     }
 
+    private fun setOrientationDetective() {
+        val orientationDetective = object : OrientationDetective(activity) {
+            override fun onSimpleOrientationChanged(orientation: Int) {
+                if (mPreview != null && mCamera != null) {
+                    // this send rotation count to camera surface object
+                    mPreview!!.setOrientationDetective(orientation)
+                    // then call to reset param to Camera object
+                    mPreview!!.refreshCamera(mCamera!!)
+
+                    mPreview!!.setDefaultOrientation(getDeviceDefaultOrientation())
+
+                }
+            }
+        }
+        orientationDetective.enable()
+    }
+
+    fun getDeviceDefaultOrientation(): Int {
+        var windowManager: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        var config: Configuration = resources.configuration
+        var rotation = windowManager.defaultDisplay.rotation
+        if (((rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_180) &&
+                config.orientation == Configuration.ORIENTATION_LANDSCAPE)
+                || ((rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) &&
+                config.orientation == Configuration.ORIENTATION_PORTRAIT)) {
+            Log.e("rotation", "Landscape")
+            return Configuration.ORIENTATION_LANDSCAPE
+
+        } else {
+            Log.e("rotation", "Portrait")
+            return Configuration.ORIENTATION_PORTRAIT
+        }
+    }
+
     fun sendPhoto() {
         // sendLocation()
         if (!checkGps() || !Utils.isNetWorkConnnected(activity)) {
@@ -138,7 +174,7 @@ class DayOff : Fragment(), OnMapReadyCallback {
             { bytes: ByteArray, camera: Camera ->
                 val fileTam: File = getFile()
                 imageUri = Uri.fromFile(fileTam)
-                var filess= File(imageUri.toString())
+                var filess = File(imageUri.toString())
                 Log.e("link", imageUri.path)
                 if (fileTam == null) {
                     Log.d(TAG, "Error creating media file, check storage permissions")
@@ -153,7 +189,7 @@ class DayOff : Fragment(), OnMapReadyCallback {
 
     @SuppressLint("SimpleDateFormat")
     fun getFile(): File {
-        val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "CameraDemo")
+        val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "/CameraDemo")
         if (!folder.exists()) {
             folder.mkdir()
         }
@@ -213,7 +249,8 @@ class DayOff : Fragment(), OnMapReadyCallback {
                 })
         refreshCamera()
     }
-    fun refreshCamera(){
+
+    fun refreshCamera() {
         mPreview!!.refreshCamera(mCamera!!)
     }
 
@@ -232,5 +269,13 @@ class DayOff : Fragment(), OnMapReadyCallback {
 
         }
         sendLocation()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (mCamera != null) {
+            mCamera!!.release()
+            mCamera = null
+        }
     }
 }

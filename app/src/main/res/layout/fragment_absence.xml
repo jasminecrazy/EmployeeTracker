@@ -21,13 +21,18 @@
             android:layout_marginLeft="10dp"
             android:text="Send" />
     </LinearLayout>
+   <LinearLayout
+       android:background="#3ae986"
+       android:gravity="center"
+       android:id="@+id/llTam"
+       android:layout_width="match_parent"
+       android:layout_height="250dp">
+       <FrameLayout
+           android:id="@+id/preview"
+           android:layout_width="250dp"
+           android:layout_height="250dp" />
+   </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/preview"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true" />
 
     <fragment xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
@@ -35,6 +40,6 @@
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:layout_above="@id/lllayout"
-        android:layout_below="@id/preview"
+        android:layout_below="@id/llTam"
         tools:context="com.suong.employeetracker.MapsActivity" />
 </RelativeLayout>
