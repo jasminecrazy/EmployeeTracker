@@ -1,23 +1,25 @@
 package com.suong.employeetracker
 
+import android.app.DatePickerDialog
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_comelate.*
-import java.util.*
-import android.app.DatePickerDialog
-import android.app.ProgressDialog
-import android.util.Log
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.DatePicker
+import android.widget.Toast
 import com.example.nbhung.testcallapi.DateOfDate
 import com.suong.model.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_comelate.*
 import kotlinx.android.synthetic.main.fragment_comelate.view.*
+import java.util.*
 import kotlin.collections.ArrayList
-import android.R.array
-import android.widget.*
 
 
 /**
@@ -37,7 +39,7 @@ class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnI
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-       CaLam=listCa.get(p2).id
+        CaLam = listCa.get(p2).id
     }
 
 
@@ -54,9 +56,12 @@ class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnI
         dialog.setCancelable(false)
         dialog.show()
         loadShiftWork()
-        view.spinCaLam.onItemSelectedListener=this
+        view.spinCaLam.onItemSelectedListener = this
         view.tvDateStart.setOnClickListener {
-            openCalenda()
+            openCalendaStart()
+        }
+        view.tvDateEnd.setOnClickListener {
+            openCalendaEnd()
         }
         view.btnSend.setOnClickListener {
             dialog.show()
@@ -89,7 +94,7 @@ class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnI
         view!!.spinCaLam.adapter = adapter
     }
 
-    fun openCalenda() {
+    fun openCalendaStart() {
         val c = Calendar.getInstance(TimeZone.getTimeZone("GMT+7:00"))
         val years = c.get(Calendar.YEAR)
         val month = c.get(Calendar.MONTH)
@@ -102,17 +107,31 @@ class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnI
         datePickerDialog.show()
     }
 
-    fun sendAbsense() {
-        if ( tvDateStart != null && contentReason != null && tvDateStart.text != null && contentReason.text != null) {
+    fun openCalendaEnd() {
+        val c = Calendar.getInstance(TimeZone.getTimeZone("GMT+7:00"))
+        val years = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
+        val datePickerDialog = DatePickerDialog(activity,
+                DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                    var str: String = year.toString() + "-" + (monthOfYear + 1) + "-" + dayOfMonth.toString()
+                    tvDateEnd.text = str
+                }, years, month, day)
+        datePickerDialog.show()
+    }
 
+    fun sendAbsense() {
+        if (tvDateStart != null && contentReason != null && tvDateStart.text != null && contentReason.text != null) {
             val reason: String = contentReason.text.toString()
-            val datetime: String = DateOfDate.getTimeNow()
-            val dateTimeStart: String = tvDateStart.text.toString()
-            IEmployee.sendAbsense(sendAbsenseToSever(sendEmployeess(SharedPreferencesManager.getIdUser(activity)!!.toInt()), ShiftWork(CaLam), reason, dateTimeStart, DateOfDate.getTimeGloba(), false))
+            val fromdate: String = tvDateEnd.text.toString()
+            val enddate: String = tvDateStart.text.toString()
+            Log.e("day today",DateOfDate.getDay())
+            IEmployee.sendAbsense(sendAbsenseToSever(sendEmployeess(SharedPreferencesManager.getIdUser(activity)!!.toInt()), ShiftWork(CaLam), reason, DateOfDate.getDay(), DateOfDate.getTimeGloba(), false, fromdate, enddate))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ result ->
                         Toast.makeText(activity, "Success", Toast.LENGTH_SHORT).show()
+                        Log.e("success", "success")
                         dialog.dismiss()
                     }, { error ->
                         dialog.dismiss()

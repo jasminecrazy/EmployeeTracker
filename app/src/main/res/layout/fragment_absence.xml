@@ -22,12 +22,24 @@
             android:text="Send" />
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/preview"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true" />
+      <RelativeLayout
+          android:id="@+id/llRelativelayout"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+          <FrameLayout
+              android:id="@+id/preview"
+              android:layout_width="match_parent"
+              android:layout_height="250dp"
+              android:layout_alignParentStart="true"
+              android:layout_alignParentTop="true" />
+          <TextureView
+              android:visibility="gone"
+              android:id="@+id/tvtureView"
+              android:layout_width="match_parent"
+              android:layout_height="250dp"
+              android:layout_alignParentStart="true"
+              android:layout_alignParentTop="true" />
+      </RelativeLayout>
 
     <fragment xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
@@ -35,6 +47,6 @@
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:layout_above="@id/lllayout"
-        android:layout_below="@id/preview"
+        android:layout_below="@id/llRelativelayout"
         tools:context="com.suong.employeetracker.MapsActivity" />
 </RelativeLayout>

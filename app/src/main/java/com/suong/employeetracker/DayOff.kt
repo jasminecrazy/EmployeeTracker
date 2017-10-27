@@ -5,17 +5,21 @@ package com.suong.employeetracker
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.pm.PackageManager
 import android.hardware.Camera
+import android.hardware.camera2.CameraManager
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -50,14 +54,15 @@ class DayOff : Fragment(), OnMapReadyCallback {
     private var mPreview: CameraPreview? = null
     private lateinit var mMap: GoogleMap
     private var locationManager: LocationManager? = null
-    val CAMERA_REQUEST_CODE = 110
-    lateinit var imageFilePath: String
     private lateinit var imageUri: Uri
     private lateinit var imageViewss: ImageView
     private lateinit var storage: FirebaseStorage
     private lateinit var storageReference: StorageReference
     private lateinit var idImg: String
-    private lateinit var mCurrentPhotoPath: String
+
+    //for camera API2
+    private val textureView: TextureView? = null
+
     private var location: Location? = null
     val IEmployee by lazy {
         com.suong.Api.ApiApp.create()
@@ -82,7 +87,17 @@ class DayOff : Fragment(), OnMapReadyCallback {
 
         //init view
         // Create an instance of Camera
-        mCamera = getCameraInstance()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val manager: CameraManager = activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+
+            view.preview.visibility = View.GONE
+            view.tvtureView.visibility = View.VISIBLE
+        } else {
+            mCamera = getCameraInstance()
+            view.preview.visibility = View.VISIBLE
+            view.tvtureView.visibility = View.GONE
+        }
+
 
         // Create our Preview view and set it as the content of our activity.
         mPreview = CameraPreview(activity, this.mCamera!!)
@@ -138,7 +153,7 @@ class DayOff : Fragment(), OnMapReadyCallback {
             { bytes: ByteArray, camera: Camera ->
                 val fileTam: File = getFile()
                 imageUri = Uri.fromFile(fileTam)
-                var filess= File(imageUri.toString())
+                var filess = File(imageUri.toString())
                 Log.e("link", imageUri.path)
                 if (fileTam == null) {
                     Log.d(TAG, "Error creating media file, check storage permissions")
@@ -213,7 +228,8 @@ class DayOff : Fragment(), OnMapReadyCallback {
                 })
         refreshCamera()
     }
-    fun refreshCamera(){
+
+    fun refreshCamera() {
         mPreview!!.refreshCamera(mCamera!!)
     }
 

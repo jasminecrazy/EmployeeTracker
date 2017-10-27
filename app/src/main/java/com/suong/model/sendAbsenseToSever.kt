@@ -8,4 +8,6 @@ data class sendAbsenseToSever(val employee:sendEmployeess,
                               val reason:String,
                               val sendDate:String,
                               val timeSend:String?,
-                              val status:Boolean)
+                              val status:Boolean,
+                              val fromDate:String?,
+                              val toDate:String?)
