@@ -28,7 +28,7 @@ class LoginActivity : AppCompatActivity() {
         dialog.setTitle("Loading")
         dialog.setCancelable(false)
         Log.e("get current time",DateOfDate.getTimeNow())
-        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.INTERNET,android.Manifest.permission.WRITE_EXTERNAL_STORAGE,android.Manifest.permission.READ_EXTERNAL_STORAGE), 123)
+        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.INTERNET,android.Manifest.permission.WRITE_EXTERNAL_STORAGE,android.Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.CAMERA), 123)
         btn_login.setOnClickListener {
             if (Utils.isNetWorkConnnected(applicationContext)){
                 if (edt_name != null && edt_password != null) {
@@ -53,13 +53,13 @@ class LoginActivity : AppCompatActivity() {
         response.login(userLogin)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ result ->
+                .subscribe({ (id) ->
                     Toast.makeText(applicationContext, "Login Success", Toast.LENGTH_SHORT).show()
-                    //     Log.e("result", result.id.toString())
-                    SharedPreferencesManager.setIdUser(applicationContext, result.id.toString())
-                    SharedPreferencesManager.setEmployeeId(applicationContext, result.id.toString())
-                    dialog.dismiss()
+                         Log.e("result", id.toString())
+                    SharedPreferencesManager.setIdUser(applicationContext, id.toString())
                     startActivity()
+                    dialog.dismiss()
+
                 }, { error ->
                     Toast.makeText(applicationContext, "Login Failed", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
