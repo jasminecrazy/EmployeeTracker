@@ -1,17 +1,15 @@
 package com.suong.employeetracker
 
-import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.res.Configuration
 import android.hardware.Camera
-import android.os.Build
 import android.util.Log
-import android.view.Surface.*
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import java.io.IOException
+
+
 
 
 /**
@@ -23,12 +21,30 @@ open class CameraPreview(context: Context, private var mCamera: Camera) : Surfac
     private val CAMERA_PARAM_LANDSCAPE = "landscape"
     private val CAMERA_PARAM_PORTRAIT = "portrait"
     private val mHolder: SurfaceHolder
+    private var mOrientationDetective: Int = 0
+    private var defaultOrientation: Int = 0
+    private var mCameraId: Int = 0
+    fun getOrientationDetective(): Int {
+        return mOrientationDetective
+    }
+
+    fun setOrientationDetective(mOrientationDetective: Int) {
+        this.mOrientationDetective = mOrientationDetective
+    }
+
+    fun getDefaultOrientation(): Int {
+        return defaultOrientation
+    }
+
+    fun setDefaultOrientation(defaultOrientation: Int) {
+        this.defaultOrientation = defaultOrientation
+    }
 
     init {
 
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
-        mHolder = holder
+        mHolder = this.holder
         mHolder.addCallback(this)
         // deprecated setting, but required on Android versions prior to 3.0
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS)
@@ -39,8 +55,7 @@ open class CameraPreview(context: Context, private var mCamera: Camera) : Surfac
         // The Surface has been created, now tell the camera where to draw the preview.
         try {
             mCamera.setPreviewDisplay(holder)
-            setCameraPrams()
-            mCamera.setPreviewDisplay(holder)
+            refreshCamera(mCamera)
             mCamera.startPreview()
         } catch (e: IOException) {
             Log.d(TAG, "Error setting camera preview: " + e.message)
@@ -48,15 +63,6 @@ open class CameraPreview(context: Context, private var mCamera: Camera) : Surfac
 
     }
 
-    fun setCameraPrams() {
-        val parameters = mCamera.parameters
-        parameters.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
-        mCamera.parameters = parameters
-        mCamera.parameters.supportedPictureSizes
-        val portrait = isPortrait()
-        configureCameraParameters(parameters, portrait)
-
-    }
 
     fun refreshCamera(camera: Camera) {
 
@@ -89,13 +95,25 @@ open class CameraPreview(context: Context, private var mCamera: Camera) : Surfac
         setCamera(camera)
 
         try {
-
             val cameraParams = mCamera.parameters
-            val portrait = isPortrait()
-            configureCameraParameters(cameraParams, portrait)
-            mCamera.setPreviewDisplay(mHolder)
-            mCamera.startPreview()
+            /*boolean portrait = isPortrait();
+            configureCameraParameters(cameraParams, portrait);*/
 
+            val cameraInfo = Camera.CameraInfo()
+            Camera.getCameraInfo(mCameraId, cameraInfo)
+            if (getDefaultOrientation() === Configuration.ORIENTATION_LANDSCAPE) {
+                //Default lanscape: SamSung Tab: 0 but must set display orientation = 90
+                mCamera.setDisplayOrientation((cameraInfo.orientation + 90) % 360)
+            } else {
+                //Default portrait: SamSung Phone: 90, Nexus 5: 270
+                mCamera.setDisplayOrientation(cameraInfo.orientation)
+            }
+
+            cameraParams.setRotation(getImageRotation(cameraInfo))
+            mCamera.parameters = cameraParams
+            ///
+            mCamera.setPreviewDisplay(holder)
+            mCamera.startPreview()
         } catch (e: Exception) {
 
             Log.d("VIEW_LOG_TAG", "Error starting camera preview: " + e.message)
@@ -104,7 +122,27 @@ open class CameraPreview(context: Context, private var mCamera: Camera) : Surfac
 
     }
 
-    @SuppressLint("ObsoleteSdkInt")
+    private fun getImageRotation(cameraInfo: Camera.CameraInfo): Int {
+        // set Image rotate angle when camera auto rotate
+        var imageRotate: Int
+
+        /*LogUtil.e(TAG, "getImageRotationFrontCamera", getOrientationDetective() + " " + cameraInfo.orientation);*/
+        when (getOrientationDetective()) {
+            0 -> imageRotate = cameraInfo.orientation
+            1 -> imageRotate = (cameraInfo.orientation + 90) % 360
+            2 -> imageRotate = (cameraInfo.orientation + 180) % 360
+            else -> imageRotate = (cameraInfo.orientation + 270) % 360
+        }
+        if (mCameraId !== Camera.CameraInfo.CAMERA_FACING_BACK) {
+            imageRotate -= 360
+        }
+        if (imageRotate < 0) {
+            imageRotate *= -1
+        }
+        return imageRotate
+    }
+
+  /*  @SuppressLint("ObsoleteSdkInt")
     protected fun configureCameraParameters(cameraParams: Camera.Parameters, portrait: Boolean) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.FROYO) { // for 2.1 and before
             if (portrait) {
@@ -126,7 +164,7 @@ open class CameraPreview(context: Context, private var mCamera: Camera) : Surfac
             Log.v("LOG_TAG", "angle: " + angle)
             mCamera.setDisplayOrientation(angle)
         }
-    }
+    }*/
 
     fun setCamera(camera: Camera) {
 
@@ -135,9 +173,6 @@ open class CameraPreview(context: Context, private var mCamera: Camera) : Surfac
 
     }
 
-    fun isPortrait(): Boolean {
-        return context.resources.configuration.orientation === Configuration.ORIENTATION_PORTRAIT
-    }
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         mCamera.stopPreview();
