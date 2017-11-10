@@ -1,14 +1,16 @@
 package com.suong.Api
 
 import com.suong.model.*
-import io.reactivex.Completable
 import io.reactivex.Observable
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
 import java.util.concurrent.TimeUnit
 
 /**
@@ -27,8 +29,8 @@ interface ApiApp {
     @GET("admin/api/shiftwork")
     fun getshiftwork(): Observable<List<ResponseShiftWork>>
 
-    @GET("admin/api/absence/{id}")
-    fun getListDayAbsence(@Path("id") id: String): Observable<ResponseAbsenceForm>
+    @GET("admin/api/absenceForm/{id}")
+    fun getListDayAbsence(@Path("id") id: String): Observable<List<ResponseAbsenceForm>>
 
     companion object Factory {
         fun create(): ApiApp {

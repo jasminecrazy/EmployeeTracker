@@ -1,5 +1,6 @@
 package com.suong.employeetracker
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
@@ -13,13 +14,13 @@ import com.suong.model.ResponseAbsenceForm
 import com.suong.model.SharedPreferencesManager
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_myform.view.*
 
 /**
  * Created by Thu Suong on 10/21/2017.
  */
-class MyForm : Fragment() {
-    private var adapter:itemListViewAdapter?= null
+class ListAbsence : Fragment() {
+    private lateinit var dialog: ProgressDialog
+    private var adapter: itemListViewAdapter? = null
     private var mList: MutableList<ResponseAbsenceForm> = ArrayList<ResponseAbsenceForm>()
     val IEmployee by lazy {
         com.suong.Api.ApiApp.create()
@@ -27,26 +28,43 @@ class MyForm : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = layoutInflater.inflate(R.layout.fragment_myform, container, false)
-       // getListAbsence()
-        mList.add(ResponseAbsenceForm(1,"20-17-10","dau bung",true))
-        mList.add(ResponseAbsenceForm(2,"20-17-10","dau chan",true))
-        mList.add(ResponseAbsenceForm(3,"20-17-10","dau tay",false))
-        adapter=itemListViewAdapter(activity,mList)
-        view.myListView.adapter=adapter
+        dialog = ProgressDialog(activity)
+        dialog.setMessage("Please wait")
+        dialog.setTitle("Loading")
+        dialog.setCancelable(false)
+        getListAbsence()
         return view
     }
 
     fun getListAbsence() {
-        Log.e("idUser",SharedPreferencesManager.getIdUser(activity))
-        IEmployee.getListDayAbsence(SharedPreferencesManager.getIdUser(activity)!!)
+        dialog.show()
+        Log.e("idUser", SharedPreferencesManager.getIdUser(activity))
+        //SharedPreferencesManager.getIdUser(activity)!!
+        IEmployee.getListDayAbsence("11")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ result ->
-                    Toast.makeText(activity, "Success", Toast.LENGTH_SHORT).show()
+                    /*Log.e("result", result.size.toString())
+                    Log.e("result", result.get(0).toString())
+                    Log.e("result", result.get(1).toString())*/
+                    Toast.makeText(activity, " Success", Toast.LENGTH_SHORT).show()
+                    mList.addAll(result)
+                    if (mList.size != 0) {
+                        showList()
+                    }
 
-        }, { error ->
+
+                }, { error ->
                     Log.e("error", error.message)
                     Toast.makeText(activity, " Failed", Toast.LENGTH_SHORT).show()
                 })
+    }
+
+    fun showList() {
+        if (dialog.isShowing) {
+            dialog.dismiss()
+        }
+        adapter = itemListViewAdapter(activity, mList)
+        view!!.findViewById<ListView>(R.id.myListView).adapter = adapter
     }
 }
