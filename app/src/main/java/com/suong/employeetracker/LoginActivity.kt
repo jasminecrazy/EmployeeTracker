@@ -27,8 +27,9 @@ class LoginActivity : AppCompatActivity() {
         dialog.setMessage("Please wait")
         dialog.setTitle("Loading")
         dialog.setCancelable(false)
-        Log.e("get current time", DateOfDate.getTimeNow())
-        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.INTERNET, android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE), 123)
+
+        Log.e("get current time",DateOfDate.getTimeNow())
+        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.INTERNET,android.Manifest.permission.WRITE_EXTERNAL_STORAGE,android.Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.CAMERA), 123)
         btn_login.setOnClickListener {
             if (Utils.isNetWorkConnnected(applicationContext)) {
                 if (edt_name != null && edt_password != null) {
@@ -58,7 +59,10 @@ class LoginActivity : AppCompatActivity() {
                     //     Log.e("result", result.id.toString())
                     SharedPreferencesManager.setIdUser(applicationContext, result.id.toString())
                     dialog.dismiss()
+
                     startActivity()
+                    dialog.dismiss()
+
                 }, { error ->
                     Toast.makeText(applicationContext, "Login Failed", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()

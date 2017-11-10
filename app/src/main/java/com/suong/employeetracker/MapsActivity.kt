@@ -1,5 +1,7 @@
 package com.suong.employeetracker
 
+import android.app.Dialog
+import android.app.ProgressDialog
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
@@ -26,16 +28,19 @@ class MapsActivity : Fragment(), OnMapReadyCallback {
     private var location: Location? = null
     private var locationManager: LocationManager? = null
     private var locationListener: LocationListener? = null
-    val IEmployee by lazy {
-        com.suong.Api.ApiApp.create()
-    }
+    private var dialog: ProgressDialog? = null
+
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = layoutInflater.inflate(R.layout.activity_maps, container, false)
         locationManager = activity.getSystemService(android.content.Context.LOCATION_SERVICE) as LocationManager
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
-        //  sendLocation()
+        dialog = ProgressDialog(activity)
+        dialog!!.setMessage("Please wait")
+        dialog!!.setTitle("Loading")
+        dialog!!.setCancelable(false)
+        dialog!!.show()
         return view
     }
 
@@ -51,11 +56,8 @@ class MapsActivity : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.clear()
-        mMap.isMyLocationEnabled = true
-        // Add a marker in Sydney and move the camera
 
-        // khi map khởi tạo xong ,sẵn sang để sử dụng thì mới check network
-        //nếu như network ko mở thì nó sẽ lấy = gps
+        mMap.isMyLocationEnabled = true
         if (Utils.isNetWorkConnnected(activity)) {
             if (ActivityCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -63,53 +65,44 @@ class MapsActivity : Fragment(), OnMapReadyCallback {
             }
             location = locationManager!!.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
             if (location != null)
-                updateLocation(location!!)
-
+                eventUpdateLocation()
         } else {
             if (checkGps()) {
                 location = locationManager!!.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                 if (location != null)
-                    updateLocation(location!!)
+                    eventUpdateLocation()
 
             }
         }
-        if (location == null) Toast.makeText(activity, "Please enable GPS", Toast.LENGTH_LONG).show()
-        eventUpdateLocation()
+
+     /*   if (location == null) Toast.makeText(activity, "Please enable GPS", Toast.LENGTH_LONG).show()
+        eventUpdateLocation()*/
+
+        if (location == null) Toast.makeText(activity, "Please enable GPS", Toast.LENGTH_SHORT).show()
+
     }
 
     fun checkGps(): Boolean {
         return locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (dialog!!.isShowing){
+            dialog!!.dismiss()
+        }
+    }
     fun updateLocation(locationMap: Location) {
         mMap.clear()
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(locationMap.latitude, locationMap.longitude), 15f))
         val latlng: LatLng = LatLng(locationMap.latitude, locationMap.longitude)
       //  Log.d("location", latlng.toString())
        // Log.e("addddđ", Utils.convertAddr(latlng, activity))
+
         mMap.addMarker(MarkerOptions().title(Utils.convertAddr(latlng, activity)).position(LatLng(locationMap.latitude, locationMap.longitude))).showInfoWindow()
 
 
     }
-
-//    fun convertAddr(lat: LatLng): String {
-//        var geocoder = Geocoder(activity, Locale.getDefault())
-//
-//        var addresses: List<Address>? = null
-//        try {
-//            addresses = geocoder.getFromLocation(lat.latitude, lat.longitude, 1)
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//        }
-//        var streetAddress: String = ""
-//        if (addresses != null) {
-//            val returnedAddress = addresses[0]
-//            streetAddress = returnedAddress.getAddressLine(0)
-//
-//        }
-//        Log.e("add", streetAddress)
-//        return streetAddress
-//    }
 
 
     fun eventUpdateLocation() {
