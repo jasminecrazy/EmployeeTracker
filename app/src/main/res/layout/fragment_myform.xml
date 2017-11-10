@@ -3,15 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Chỗ này là listview hiện danh sách những ngày đã xin nghỉ"
-        android:textSize="30sp" />
-
     <ListView
         android:id="@+id/myListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+
+        />
 </LinearLayout>
