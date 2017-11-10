@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 changeFramgent(ComeLate())
             }
             R.id.nav_myform -> {
-                changeFramgent(MyForm())
+                changeFramgent(ListAbsence())
             }
         }
 

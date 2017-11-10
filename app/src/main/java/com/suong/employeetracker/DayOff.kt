@@ -2,9 +2,9 @@
 
 package com.suong.employeetracker
 
+
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -20,13 +20,10 @@ import android.os.*
 import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
 import android.view.*
-
-
 import android.widget.ImageView
 import android.widget.Toast
 import com.example.nbhung.testcallapi.DateOfDate
@@ -44,7 +41,6 @@ import com.suong.model.SharedPreferencesManager
 import com.suong.model.sendEmployeess
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_absence.*
 import kotlinx.android.synthetic.main.fragment_absence.view.*
 import java.io.File
 import java.io.FileOutputStream

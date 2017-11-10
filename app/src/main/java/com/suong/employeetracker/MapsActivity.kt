@@ -9,7 +9,6 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,6 +74,10 @@ class MapsActivity : Fragment(), OnMapReadyCallback {
 
             }
         }
+
+     /*   if (location == null) Toast.makeText(activity, "Please enable GPS", Toast.LENGTH_LONG).show()
+        eventUpdateLocation()*/
+
         if (location == null) Toast.makeText(activity, "Please enable GPS", Toast.LENGTH_SHORT).show()
 
     }
@@ -93,7 +96,9 @@ class MapsActivity : Fragment(), OnMapReadyCallback {
         mMap.clear()
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(locationMap.latitude, locationMap.longitude), 15f))
         val latlng: LatLng = LatLng(locationMap.latitude, locationMap.longitude)
-        Log.e("addddđ", Utils.convertAddr(latlng, activity))
+      //  Log.d("location", latlng.toString())
+       // Log.e("addddđ", Utils.convertAddr(latlng, activity))
+
         mMap.addMarker(MarkerOptions().title(Utils.convertAddr(latlng, activity)).position(LatLng(locationMap.latitude, locationMap.longitude))).showInfoWindow()
 
 

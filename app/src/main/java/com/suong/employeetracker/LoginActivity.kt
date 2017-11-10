@@ -27,17 +27,18 @@ class LoginActivity : AppCompatActivity() {
         dialog.setMessage("Please wait")
         dialog.setTitle("Loading")
         dialog.setCancelable(false)
+
         Log.e("get current time",DateOfDate.getTimeNow())
         ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.INTERNET,android.Manifest.permission.WRITE_EXTERNAL_STORAGE,android.Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.CAMERA), 123)
         btn_login.setOnClickListener {
-            if (Utils.isNetWorkConnnected(applicationContext)){
+            if (Utils.isNetWorkConnnected(applicationContext)) {
                 if (edt_name != null && edt_password != null) {
                     callApi(edt_name.text.toString(), edt_password.text.toString())
                     dialog.show()
                 } else {
                     Toast.makeText(applicationContext, "wrong pass or email", Toast.LENGTH_SHORT).show()
                 }
-            }else{
+            } else {
                 Toast.makeText(applicationContext, "no connect internet", Toast.LENGTH_SHORT).show()
             }
 
@@ -53,10 +54,12 @@ class LoginActivity : AppCompatActivity() {
         response.login(userLogin)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ (id) ->
-                    Toast.makeText(applicationContext, "Login Success", Toast.LENGTH_SHORT).show()
-                         Log.e("result", id.toString())
-                    SharedPreferencesManager.setIdUser(applicationContext, id.toString())
+                .subscribe({ result ->
+                    //  Toast.makeText(applicationContext, "Login Success", Toast.LENGTH_SHORT).show()
+                    //     Log.e("result", result.id.toString())
+                    SharedPreferencesManager.setIdUser(applicationContext, result.id.toString())
+                    dialog.dismiss()
+
                     startActivity()
                     dialog.dismiss()
 
