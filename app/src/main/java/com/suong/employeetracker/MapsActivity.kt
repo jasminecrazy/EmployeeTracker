@@ -1,6 +1,5 @@
 package com.suong.employeetracker
 
-import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.pm.PackageManager
 import android.location.Location
@@ -9,27 +8,35 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.example.nbhung.testcallapi.DateOfDate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.suong.model.SharedPreferencesManager
+import com.suong.model.sendEmployeess
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 class MapsActivity : Fragment(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
-    val LOCATION_UPDATE_MIN_DISTANCE: Float = 1f
-    val LOCATION_UPDATE_MIN_TIME: Long = 500
+    val LOCATION_UPDATE_MIN_DISTANCE: Float = 500f
+    val LOCATION_UPDATE_MIN_TIME: Long = 60000*30
     private var location: Location? = null
     private var locationManager: LocationManager? = null
     private var locationListener: LocationListener? = null
     private var dialog: ProgressDialog? = null
-
+    val IEmployee by lazy {
+        com.suong.Api.ApiApp.create()
+    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = layoutInflater.inflate(R.layout.activity_maps, container, false)
@@ -98,10 +105,29 @@ class MapsActivity : Fragment(), OnMapReadyCallback {
         val latlng: LatLng = LatLng(locationMap.latitude, locationMap.longitude)
       //  Log.d("location", latlng.toString())
        // Log.e("addddđ", Utils.convertAddr(latlng, activity))
-
         mMap.addMarker(MarkerOptions().title(Utils.convertAddr(latlng, activity)).position(LatLng(locationMap.latitude, locationMap.longitude))).showInfoWindow()
+         sendLocation()
+
+    }
+    fun sendLocation() {
+        var myAdd: String = Utils.convertAddr(LatLng(location!!.latitude, location!!.longitude), activity)
+        Log.e("address", myAdd)
+        val response = IEmployee
+        val id:Int = SharedPreferencesManager.getIdUser(activity)!!.toInt()
+        val userLogin = com.suong.model.sendLocation(sendEmployeess(id), location!!.longitude, location!!.latitude, myAdd, DateOfDate.getTimeGloba(), DateOfDate.getDay(), "")
+        response.sendLocation(userLogin)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ result ->
+                    Toast.makeText(activity, "mapsacitivity send success", Toast.LENGTH_SHORT).show()
+                    Log.e("send mapsacitivity", "success")
 
 
+                }, { error ->
+                    Log.e("error mapsacitivity", error.message)
+                    Toast.makeText(activity, " mapsacitivity send Failed", Toast.LENGTH_SHORT).show()
+                })
+        //   refreshCamera()
     }
 
 
