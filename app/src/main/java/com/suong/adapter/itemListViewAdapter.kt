@@ -24,10 +24,9 @@ class itemListViewAdapter(private val context: Context, list: MutableList<Respon
     override fun getView(i: Int, convertView: View?, viewGroup: ViewGroup?): View {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
        val vi:View = inflater.inflate(R.layout.item_listview, null)
-        val lyDo:TextView = vi.findViewById(R.id.tvLyDoXinNghi)
         val ngayGui:TextView = vi.findViewById(R.id.tvNgayGui)
         val trangThai:TextView = vi.findViewById(R.id.tvTrangThai)
-        lyDo.text = list[i].reason
+
         ngayGui.text = list[i].sendDate
         if(list[i].status){
             trangThai.text ="Đã Duyệt"

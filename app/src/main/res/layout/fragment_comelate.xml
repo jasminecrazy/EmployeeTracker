@@ -13,8 +13,8 @@
         android:gravity="center_horizontal"
         android:text="Đơn xin nghỉ"
         android:textStyle="bold"
-        android:textColor="@color/black"
-        android:textSize="25sp" />
+        android:textColor="@color/colorDarkBlue"
+        android:textSize="30sp" />
 
 
     <LinearLayout
@@ -22,23 +22,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/ll4"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="30dp"
-        android:orientation="vertical">
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lý do"
+            android:layout_marginRight="50dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            />
         <EditText
             android:id="@+id/contentReason"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/txt_border"
-            android:gravity="top|left"
-            android:hint="Lý do xin nghỉ"
+            android:gravity="left"
             android:inputType="textMultiLine|textNoSuggestions"
-            android:lines="8"
-            android:maxLines="10"
+            android:lines="6"
+            android:layout_marginLeft="10px"
+            android:maxLines="5"
             android:minLines="6"
             android:padding="10dp"
-            android:scrollbars="vertical"
+            android:scrollbars="horizontal"
             android:textSize="20sp" />
     </LinearLayout>
 
@@ -92,7 +100,8 @@
             android:id="@+id/spinCaLam"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="left" />
+            android:layout_marginRight="5px"
+             />
     </LinearLayout>
 
     <LinearLayout
@@ -100,7 +109,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/ll2"
-        android:layout_marginLeft="10dp"
+
         android:layout_marginRight="10dp"
         android:layout_marginTop="20dp"
         android:orientation="horizontal">
@@ -109,6 +118,7 @@
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:layout_marginLeft="9dp"
             android:textColor="@color/black"
             android:text="Đến Ngày : "
             android:textSize="20sp" />
@@ -123,12 +133,12 @@
     </LinearLayout>
 
     <Button
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="30dp"
         android:id="@+id/btnSend"
-        android:layout_width="150dp"
+        android:layout_width="200dp"
         android:layout_height="70dp"
-        android:textColor="@color/black"
-        android:background="@color/blue_btn_bg_pressed_color"
+        android:background="@drawable/button_background"
+        android:textColor="#FDFDFE"
         android:layout_below="@id/ll1"
         android:textSize="20sp"
 
