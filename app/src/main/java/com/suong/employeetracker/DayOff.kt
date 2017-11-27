@@ -6,6 +6,7 @@ package com.suong.employeetracker
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.*
@@ -26,6 +27,9 @@ import android.util.SparseIntArray
 import android.view.*
 import android.widget.ImageView
 import android.widget.Toast
+import com.cloudinary.android.MediaManager
+import com.cloudinary.android.callback.ErrorInfo
+import com.cloudinary.android.callback.ListenerService
 import com.example.nbhung.testcallapi.DateOfDate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -48,6 +52,7 @@ import java.io.IOException
 import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
+import kotlin.collections.HashMap
 
 
 @Suppress("DEPRECATION")
@@ -55,8 +60,8 @@ import java.util.concurrent.TimeUnit
  * Created by Thu Suong on 10/6/2017.
  */
 class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
-    override fun finish() {
-        sendPhoto()
+    override fun finish(str: File) {
+        sendPhoto(str)
     }
 
     private lateinit var dialog: ProgressDialog
@@ -87,10 +92,12 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
 
         @SuppressLint("NewApi")
         override fun onSurfaceTextureAvailable(texture: SurfaceTexture, width: Int, height: Int) {
+            //open your camera here
             openCamera(width, height)
         }
 
         override fun onSurfaceTextureSizeChanged(texture: SurfaceTexture, width: Int, height: Int) {
+            // Transform you image captured size according to the surface width and height
             configureTransform(width, height)
         }
 
@@ -255,7 +262,7 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
 
                 }
             }
-            myClick.finish()
+            myClick.finish(mFile)
         }
 
     }
@@ -655,8 +662,8 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
         (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
         //
         //fiebase
-        storage = FirebaseStorage.getInstance()
-        storageReference = storage.reference
+        /*    storage = FirebaseStorage.getInstance()
+            storageReference = storage.reference*/
         //
 
 
@@ -681,14 +688,19 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
         //event
         view.btnSend.setOnClickListener {
             //take a picture
-            dialog.show()
+           // dialog.show()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 takePicture()
             } else {
-                mCamera!!.takePicture(null, null, mPicture)
+                //    mCamera!!.takePicture(null, null, mPicture)
             }
+            //init cloudinary.com
 
-
+            var config = HashMap<String, String>()
+            config.put("cloud_name", "hcm-city")
+            config.put("api_key", "656797319255918")
+            config.put("api_secret", "ZkYkWoNlLWDBBcxM_O_0tcoRqgY")
+            MediaManager.init(activity, config)
         }
         return view
     }
@@ -758,13 +770,48 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
         }
     }
 
-    fun sendPhoto() {
+    fun sendPhoto(str: File) {
         // sendLocation()
-        imageUri = Uri.fromFile(mFile)
-        var filess = File(imageUri.toString())
-        if (!checkGps() || !Utils.isNetWorkConnnected(activity)) {
-            Toast.makeText(activity, "You need enable GPS and Internet", Toast.LENGTH_SHORT).show()
-        } else updateImageToFirebase()
+        /*  imageUri = Uri.fromFile(mFile)
+          var filess = File(imageUri.toString())*/
+        imageUri = Uri.fromFile(str)
+   /*     MediaManager.get().upload(imageUri)
+                .option("3131313", "myAvatar2")
+                .callback(object : ListenerService() {
+                    override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                    override fun onStart(requestId: String?) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                    override fun onBind(intent: Intent?): IBinder {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                    override fun onReschedule(requestId: String?, error: ErrorInfo?) {
+                        Log.e("onReschedule","onReschedule")
+
+                    }
+
+                    override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
+                        Log.e("requestId",requestId)
+                        Log.e("requestId",resultData.toString())
+                    }
+
+                    override fun onError(requestId: String?, error: ErrorInfo?) {
+                        Log.e("onError","onError")
+
+                    }
+
+                }).dispatch()*/
+        MediaManager.get().upload(imageUri)
+                .option("3131313", "myAvatar2")
+
+        /*      if (!checkGps() || !Utils.isNetWorkConnnected(activity)) {
+                  Toast.makeText(activity, "You need enable GPS and Internet", Toast.LENGTH_SHORT).show()
+              } else updateLocation()*/
 
 
     }
@@ -781,23 +828,23 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
         return c // returns null if camera is unavailable
     }
 
-    private val mPicture: Camera.PictureCallback = Camera.PictureCallback(
-            { bytes: ByteArray, camera: Camera ->
-                val fileTam: File = getFile()
-                imageUri = Uri.fromFile(fileTam)
-                var filess = File(imageUri.toString())
-                Log.e("link", imageUri.path)
-                if (fileTam == null) {
-                    Log.d(TAG, "Error creating media file, check storage permissions")
-                }
-                val outPut = FileOutputStream(fileTam)
-                outPut.write(bytes)
-                outPut.close()
-                sendPhoto()
-            }
+    /* private val mPicture: Camera.PictureCallback = Camera.PictureCallback(
+             { bytes: ByteArray, camera: Camera ->
+                 val fileTam: File = getFile()
+                 imageUri = Uri.fromFile(fileTam)
+                 var filess = File(imageUri.toString())
+                 Log.e("link", imageUri.path)
+                 if (fileTam == null) {
+                     Log.d(TAG, "Error creating media file, check storage permissions")
+                 }
+                 val outPut = FileOutputStream(fileTam)
+                 outPut.write(bytes)
+                 outPut.close()
+                 sendPhoto()
+             }
 
-    )
-
+     )
+ */
     @SuppressLint("SimpleDateFormat")
     fun getFile(): File {
         val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "/CameraDemo")
@@ -824,26 +871,26 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
 
     }
 
-    fun updateImageToFirebase() {
+    /* fun updateImageToFirebase() {
 
-        idImg = "user" + UUID.randomUUID()
-        var ref: StorageReference = storageReference.child("imgUser/" + idImg)
-        ref.putFile(imageUri).addOnSuccessListener {
-            Log.e("update", "Success")
-        }
-                .addOnFailureListener(OnFailureListener {
-                    Log.e("update", "failed")
-                })
-        updateLocation()
-    }
-
+         idImg = "user" + UUID.randomUUID()
+         var ref: StorageReference = storageReference.child("imgUser/" + idImg)
+         ref.putFile(imageUri).addOnSuccessListener {
+             Log.e("update", "Success")
+         }
+                 .addOnFailureListener(OnFailureListener {
+                     Log.e("update", "failed")
+                 })
+         updateLocation()
+     }
+ */
 
     fun sendLocation() {
 
         var myAdd: String = Utils.convertAddr(LatLng(location!!.latitude, location!!.longitude), activity)
         Log.e("address", myAdd)
         val response = IEmployee
-        val id:Int = SharedPreferencesManager.getIdUser(activity)!!.toInt()
+        val id: Int = SharedPreferencesManager.getIdUser(activity)!!.toInt()
         val userLogin = com.suong.model.sendLocation(sendEmployeess(id), location!!.longitude, location!!.latitude, myAdd, DateOfDate.getTimeGloba(), DateOfDate.getDay(), "imgUser/" + idImg)
         response.sendLocation(userLogin)
                 .subscribeOn(Schedulers.io())

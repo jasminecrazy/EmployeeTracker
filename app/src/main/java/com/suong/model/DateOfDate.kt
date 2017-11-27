@@ -18,9 +18,9 @@ class DateOfDate {
             var dayNew: String
             var monthNew: String
             var yearNew: String
-            if (day  < 10) {
+            if (day < 10) {
                 dayNew = "0" + day
-            } else dayNew = day .toString()
+            } else dayNew = day.toString()
             if ((month + 1) < 10) {
                 monthNew = "0" + (month + 1)
             } else monthNew = (month + 1).toString()
@@ -35,7 +35,7 @@ class DateOfDate {
             val c = Calendar.getInstance(TimeZone.getTimeZone("GMT+7:00"))
             val hour = c.get(Calendar.HOUR_OF_DAY)
             val minute = c.get(Calendar.MINUTE)
-            val second=c.get(Calendar.SECOND)
+            val second = c.get(Calendar.SECOND)
             val getDay: String = getDay()
             var hourNew: String
             var minuteNew: String
@@ -45,15 +45,16 @@ class DateOfDate {
             if (minute < 10) {
                 minuteNew = "0" + minute
             } else minuteNew = minute.toString()
-            val getGlobla: String = getDay + "T" + hourNew + ":" + minuteNew + ":"+second+".00+07:00"
+            val getGlobla: String = getDay + "T" + hourNew + ":" + minuteNew + ":" + second + ".00+07:00"
 
             return getGlobla
         }
-        fun getTimeNow():String{
+
+        fun getTimeNow(): String {
             val c = Calendar.getInstance(TimeZone.getTimeZone("GMT+7:00"))
             val hour = c.get(Calendar.HOUR_OF_DAY)
             val minute = c.get(Calendar.MINUTE)
-            val second=c.get(Calendar.SECOND)
+            val second = c.get(Calendar.SECOND)
             var hourNew: String
             var minuteNew: String
             if (hour < 10) {
@@ -62,7 +63,7 @@ class DateOfDate {
             if (minute < 10) {
                 minuteNew = "0" + minute
             } else minuteNew = minute.toString()
-            return hourNew+":"+minuteNew+":"+second
+            return hourNew + ":" + minuteNew + ":" + second
         }
     }
 }

@@ -18,6 +18,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_comelate.*
 import kotlinx.android.synthetic.main.fragment_comelate.view.*
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -47,7 +48,6 @@ class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnI
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    private var umbala: Int? = null
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = layoutInflater.inflate(R.layout.fragment_comelate, container, false)
         dialog = ProgressDialog(activity)
@@ -101,8 +101,29 @@ class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnI
         val day = c.get(Calendar.DAY_OF_MONTH)
         val datePickerDialog = DatePickerDialog(activity,
                 DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-                    var str: String = year.toString() + "-" + (monthOfYear + 1) + "-" + dayOfMonth.toString()
-                    tvDateStart.text = str
+                    if (tvDateEnd.text.toString().equals("")) {
+                        val spToday = SimpleDateFormat("yyyy-MM-dd")
+                        var toDay = spToday.parse(DateOfDate.getDay())
+                        var str: String = year.toString() + "-" + (monthOfYear + 1) + "-" + dayOfMonth.toString()
+                        var chooseDay = spToday.parse(str)
+                        if (chooseDay.time >= toDay.time) {
+                            tvDateStart.text = str
+                        } else {
+                            Toast.makeText(activity, "Cant choose old day", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        val spToday = SimpleDateFormat("yyyy-MM-dd")
+                        var dayEnd = spToday.parse(tvDateEnd.text.toString())
+                        var str: String = year.toString() + "-" + (monthOfYear + 1) + "-" + dayOfMonth.toString()
+                        var dayStart = spToday.parse(str)
+                        if (dayEnd.time >= dayStart.time) {
+                            tvDateStart.text = str
+                        } else {
+                            Toast.makeText(activity, "you need change day end first", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+
                 }, years, month, day)
         datePickerDialog.show()
     }
@@ -114,8 +135,23 @@ class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnI
         val day = c.get(Calendar.DAY_OF_MONTH)
         val datePickerDialog = DatePickerDialog(activity,
                 DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-                    var str: String = year.toString() + "-" + (monthOfYear + 1) + "-" + dayOfMonth.toString()
-                    tvDateEnd.text = str
+                    if (tvDateStart.text.toString().equals("")) {
+                        Toast.makeText(activity, "you should choose day start first", Toast.LENGTH_SHORT).show()
+                    } else {
+
+                        val spToday = SimpleDateFormat("yyyy-MM-dd")
+                        var dayStart = spToday.parse(tvDateStart.text.toString())
+                        var str: String = year.toString() + "-" + (monthOfYear + 1) + "-" + dayOfMonth.toString()
+                        var dayEnd = spToday.parse(str)
+                        if (dayEnd.time >= dayStart.time) {
+                            tvDateEnd.text = str
+                        } else {
+                            Toast.makeText(activity, "Cant choose old day ", Toast.LENGTH_SHORT).show()
+
+
+                        }
+
+                    }
                 }, years, month, day)
         datePickerDialog.show()
     }
@@ -125,7 +161,7 @@ class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnI
             val reason: String = contentReason.text.toString()
             val fromdate: String = tvDateEnd.text.toString()
             val enddate: String = tvDateStart.text.toString()
-            Log.e("day today",DateOfDate.getDay())
+            Log.e("day today", DateOfDate.getDay())
             IEmployee.sendAbsense(sendAbsenseToSever(sendEmployeess(SharedPreferencesManager.getIdUser(activity)!!.toInt()), ShiftWork(CaLam), reason, DateOfDate.getDay(), DateOfDate.getTimeGloba(), false, fromdate, enddate))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.suong.model.SharedPreferencesManager
 import com.suong.model.sendEmployeess
+import com.suong.model.sendLocation
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -44,7 +45,7 @@ class MapsActivity : Fragment(), OnMapReadyCallback {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
         dialog = ProgressDialog(activity)
-        dialog!!.setMessage("Please wait")
+        dialog!!.setMessage("Please wait....")
         dialog!!.setTitle("Loading")
         dialog!!.setCancelable(false)
         dialog!!.show()
@@ -106,10 +107,10 @@ class MapsActivity : Fragment(), OnMapReadyCallback {
       //  Log.d("location", latlng.toString())
        // Log.e("addddđ", Utils.convertAddr(latlng, activity))
         mMap.addMarker(MarkerOptions().title(Utils.convertAddr(latlng, activity)).position(LatLng(locationMap.latitude, locationMap.longitude))).showInfoWindow()
-         sendLocation()
+   //      sendLocation()
 
     }
-    fun sendLocation() {
+ /*   fun sendLocation() {
         var myAdd: String = Utils.convertAddr(LatLng(location!!.latitude, location!!.longitude), activity)
         Log.e("address", myAdd)
         val response = IEmployee
@@ -120,16 +121,16 @@ class MapsActivity : Fragment(), OnMapReadyCallback {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ result ->
                     Toast.makeText(activity, "mapsacitivity send success", Toast.LENGTH_SHORT).show()
-                    Log.e("send mapsacitivity", "success")
+
 
 
                 }, { error ->
                     Log.e("error mapsacitivity", error.message)
-                    Toast.makeText(activity, " mapsacitivity send Failed", Toast.LENGTH_SHORT).show()
+
                 })
         //   refreshCamera()
     }
-
+*/
 
     fun eventUpdateLocation() {
         locationListener = object : LocationListener {
