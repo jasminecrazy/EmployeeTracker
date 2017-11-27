@@ -45,7 +45,7 @@ class DateOfDate {
             if (minute < 10) {
                 minuteNew = "0" + minute
             } else minuteNew = minute.toString()
-            val getGlobla: String = getDay + "T" + hourNew + ":" + minuteNew + ":" + second + ".00+07:00"
+            val getGlobla: String = getDay + "T" + hourNew + ":" + minuteNew + ":" + "00" + ".00+07:00"
 
             return getGlobla
         }

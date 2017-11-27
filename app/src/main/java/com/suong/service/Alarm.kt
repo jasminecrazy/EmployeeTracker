@@ -30,7 +30,7 @@ class Alarm : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
 
         Toast.makeText(context, "Alarm ", Toast.LENGTH_SHORT).show()
-       // sendLocation(context)
+        sendLocation(context)
     }
 
     fun sendLocation(context: Context?) {
@@ -40,11 +40,11 @@ class Alarm : BroadcastReceiver() {
             return
         }
         val location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-        val myAdd: String = Utils.convertAddr(LatLng(location!!.latitude, location!!.longitude), context)
-        Log.e("address", DateOfDate.getTimeNow())
+        val myAdd: String = Utils.convertAddr(LatLng(location!!.latitude, location.longitude), context)
+        Log.e("address", DateOfDate.getTimeGloba())
         val response = IEmployee
         val id: Int = SharedPreferencesManager.getIdUser(context)!!.toInt()
-        val userLogin = com.suong.model.sendLocation(sendEmployeess(id), location!!.longitude, location!!.latitude, myAdd, DateOfDate.getTimeNow(), DateOfDate.getDay(), "")
+        val userLogin = com.suong.model.sendLocation(sendEmployeess(id), location.longitude, location.latitude, myAdd, DateOfDate.getTimeGloba(), DateOfDate.getDay(), "")
         response.sendLocation(userLogin)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -53,7 +53,8 @@ class Alarm : BroadcastReceiver() {
 
 
                 }, { error ->
-                    Toast.makeText(context, " mapsacitivity send Failed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+                    Log.e("error",error.message)
                 })
     }
 }
