@@ -688,7 +688,7 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
         //event
         view.btnSend.setOnClickListener {
             //take a picture
-           // dialog.show()
+            // dialog.show()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 takePicture()
             } else {
@@ -775,39 +775,41 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
         /*  imageUri = Uri.fromFile(mFile)
           var filess = File(imageUri.toString())*/
         imageUri = Uri.fromFile(str)
-   /*     MediaManager.get().upload(imageUri)
-                .option("3131313", "myAvatar2")
-                .callback(object : ListenerService() {
-                    override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                    }
+        val dianary = CloudinaryUpLoad()
+        dianary.execute(imageUri.toString())
+        /*     MediaManager.get().upload(imageUri)
+                     .option("3131313", "myAvatar2")
+                     .callback(object : ListenerService() {
+                         override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
+                             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                         }
 
-                    override fun onStart(requestId: String?) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                    }
+                         override fun onStart(requestId: String?) {
+                             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                         }
 
-                    override fun onBind(intent: Intent?): IBinder {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                    }
+                         override fun onBind(intent: Intent?): IBinder {
+                             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                         }
 
-                    override fun onReschedule(requestId: String?, error: ErrorInfo?) {
-                        Log.e("onReschedule","onReschedule")
+                         override fun onReschedule(requestId: String?, error: ErrorInfo?) {
+                             Log.e("onReschedule","onReschedule")
 
-                    }
+                         }
 
-                    override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
-                        Log.e("requestId",requestId)
-                        Log.e("requestId",resultData.toString())
-                    }
+                         override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
+                             Log.e("requestId",requestId)
+                             Log.e("requestId",resultData.toString())
+                         }
 
-                    override fun onError(requestId: String?, error: ErrorInfo?) {
-                        Log.e("onError","onError")
+                         override fun onError(requestId: String?, error: ErrorInfo?) {
+                             Log.e("onError","onError")
 
-                    }
+                         }
 
-                }).dispatch()*/
-        MediaManager.get().upload(imageUri)
-                .option("3131313", "myAvatar2")
+                     }).dispatch()*/
+      /*  MediaManager.get().upload(imageUri)
+                .option("3131313", "myAvatar2")*/
 
         /*      if (!checkGps() || !Utils.isNetWorkConnnected(activity)) {
                   Toast.makeText(activity, "You need enable GPS and Internet", Toast.LENGTH_SHORT).show()
