@@ -46,7 +46,7 @@ class Myserivce : Service() {
         // Set the alarm to start at 8:00 a.m.
         val calendar = Calendar.getInstance()
         calendar.setTimeInMillis(System.currentTimeMillis())
-        calendar.set(Calendar.HOUR_OF_DAY, 8)
+        calendar.set(Calendar.MILLISECOND, 5000)
         alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         myIntent = Intent(this, Alarm::class.java)
         pendingIntent = PendingIntent.getBroadcast(applicationContext, 0, myIntent, 0)

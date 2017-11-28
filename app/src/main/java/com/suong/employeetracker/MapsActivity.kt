@@ -107,10 +107,10 @@ class MapsActivity : Fragment(), OnMapReadyCallback {
       //  Log.d("location", latlng.toString())
        // Log.e("addddđ", Utils.convertAddr(latlng, activity))
         mMap.addMarker(MarkerOptions().title(Utils.convertAddr(latlng, activity)).position(LatLng(locationMap.latitude, locationMap.longitude))).showInfoWindow()
-   //      sendLocation()
+       //  sendLocation()
 
     }
- /*   fun sendLocation() {
+    fun sendLocation() {
         var myAdd: String = Utils.convertAddr(LatLng(location!!.latitude, location!!.longitude), activity)
         Log.e("address", myAdd)
         val response = IEmployee
@@ -125,12 +125,11 @@ class MapsActivity : Fragment(), OnMapReadyCallback {
 
 
                 }, { error ->
-                    Log.e("error mapsacitivity", error.message)
+                    Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
 
                 })
         //   refreshCamera()
     }
-*/
 
     fun eventUpdateLocation() {
         locationListener = object : LocationListener {
