@@ -775,8 +775,8 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
         /*  imageUri = Uri.fromFile(mFile)
           var filess = File(imageUri.toString())*/
         imageUri = Uri.fromFile(str)
-        val dianary = CloudinaryUpLoad()
-        dianary.execute(imageUri.toString())
+       /* val dianary = CloudinaryUpLoad()
+        dianary.execute(imageUri.toString())*/
         /*     MediaManager.get().upload(imageUri)
                      .option("3131313", "myAvatar2")
                      .callback(object : ListenerService() {
