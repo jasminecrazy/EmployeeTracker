@@ -35,50 +35,45 @@ class LoginActivity : AppCompatActivity() {
         dialog.setMessage("Please wait")
         dialog.setTitle("Loading")
         dialog.setCancelable(false)
-
+        var config = HashMap<String, String>()
+        config.put("cloud_name", "hcm-city")
+        config.put("api_key", "656797319255918")
+        config.put("api_secret", "ZkYkWoNlLWDBBcxM_O_0tcoRqgY")
+        MediaManager.init(this, config)
         Log.e("get current time", DateOfDate.getTimeNow())
         ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.INTERNET, android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA), 123)
         btn_login.setOnClickListener {
+            MediaManager.get().upload(R.drawable.myavatar3)
+                    .option("public_id", "myAvatar232356")
+                    .option("invalidate", true)
+                    .callback(object : ListenerService() {
+                        override fun onStart(requestId: String?) {
 
-            var config = HashMap<String, String>()
-            config.put("cloud_name", "hcm-city")
-            config.put("api_key", "656797319255918")
-            config.put("api_secret", "ZkYkWoNlLWDBBcxM_O_0tcoRqgY")
-             MediaManager.init(this, config)
-/*            clouDinary = Cloudinary(config)
-            clouDinary.uploader().upload(R.drawable.myavatar3,ObjectUtils.asMap("123456789","one"))*/
+                        }
 
-                 MediaManager.get().upload(R.drawable.myavatar3)
-                     .option("3131313", "myAvatar23")
-                     .callback(object : ListenerService() {
-                         override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
-                             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                         }
+                        override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
+                        }
 
-                         override fun onStart(requestId: String?) {
-                             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                         }
 
-                         override fun onBind(intent: Intent?): IBinder {
-                             TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                         }
+                        override fun onBind(intent: Intent?): IBinder? {
+                            return null
+                            //To change body of created functions use File | Settings | File Templates.
+                        }
 
-                         override fun onReschedule(requestId: String?, error: ErrorInfo?) {
-                             Log.e("onReschedule","onReschedule")
+                        override fun onReschedule(requestId: String?, error: ErrorInfo?) {
 
-                         }
 
-                         override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
-                             Log.e("requestId",requestId)
-                             Log.e("requestId",resultData.toString())
-                         }
+                        }
 
-                         override fun onError(requestId: String?, error: ErrorInfo?) {
-                             Log.e("onError","onError")
+                        override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
+                            ShoDialog()
+                        }
 
-                         }
+                        override fun onError(requestId: String?, error: ErrorInfo?) {
 
-                     }).dispatch()
+                        }
+
+                    }).dispatch()
 
             /*   if (Utils.isNetWorkConnnected(applicationContext)) {
                    if (edt_name != null && edt_password != null) {
@@ -115,6 +110,10 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(applicationContext, "Login Failed", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
                 })
+    }
+
+    private fun ShoDialog() {
+        Toast.makeText(this, "Toast", Toast.LENGTH_SHORT).show()
     }
 
     fun startActivity() {
