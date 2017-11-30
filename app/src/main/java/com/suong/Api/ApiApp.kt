@@ -32,6 +32,9 @@ interface ApiApp {
     @GET("admin/api/absenceForm/{id}")
     fun getListDayAbsence(@Path("id") id: String): Observable<List<ResponseAbsenceForm>>
 
+    @GET("admin/api/employeeTask/{id}")
+    fun getListWorkSchedule(@Path("id") id: String): Observable<List<ResponseWorkSchedule>>
+
     companion object Factory {
         fun create(): ApiApp {
             val okhttp = OkHttpClient.Builder()

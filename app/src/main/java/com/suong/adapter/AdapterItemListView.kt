@@ -14,7 +14,7 @@ import com.suong.model.ResponseAbsenceForm
 /**
  * Created by Asus on 10/22/2017.
  */
-class itemListViewAdapter(private val context: Context, list: MutableList<ResponseAbsenceForm>) : BaseAdapter() {
+class AdapterItemListView(private val context: Context, list: MutableList<ResponseAbsenceForm>) : BaseAdapter() {
     private var list = ArrayList<ResponseAbsenceForm>()
 
     init {

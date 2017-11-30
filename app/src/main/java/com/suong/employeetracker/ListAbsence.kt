@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
 import android.widget.Toast
-import com.suong.adapter.itemListViewAdapter
+import com.suong.adapter.AdapterItemListView
 import com.suong.model.ResponseAbsenceForm
 import com.suong.model.SharedPreferencesManager
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -20,7 +20,7 @@ import io.reactivex.schedulers.Schedulers
  */
 class ListAbsence : Fragment() {
     private lateinit var dialog: ProgressDialog
-    private var adapter: itemListViewAdapter? = null
+    private var adapterItemListView: AdapterItemListView? = null
     private var mList: MutableList<ResponseAbsenceForm> = ArrayList<ResponseAbsenceForm>()
     val IEmployee by lazy {
         com.suong.Api.ApiApp.create()
@@ -38,9 +38,7 @@ class ListAbsence : Fragment() {
 
     fun getListAbsence() {
         dialog.show()
-        Log.e("idUser", SharedPreferencesManager.getIdUser(activity))
-        //SharedPreferencesManager.getIdUser(activity)!!
-        IEmployee.getListDayAbsence("11")
+        IEmployee.getListDayAbsence(SharedPreferencesManager.getIdUser(activity).toString())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ result ->
@@ -55,6 +53,7 @@ class ListAbsence : Fragment() {
 
 
                 }, { error ->
+                    dialog.dismiss()
                     Log.e("error", error.message)
                     Toast.makeText(activity, " Failed", Toast.LENGTH_SHORT).show()
                 })
@@ -64,7 +63,7 @@ class ListAbsence : Fragment() {
         if (dialog.isShowing) {
             dialog.dismiss()
         }
-        adapter = itemListViewAdapter(activity, mList)
-        view!!.findViewById<ListView>(R.id.myListView).adapter = adapter
+        adapterItemListView = AdapterItemListView(activity, mList)
+        view!!.findViewById<ListView>(R.id.myListView).adapter = adapterItemListView
     }
 }
