@@ -20,6 +20,10 @@
             android:id="@+id/nav_myform"
             android:icon="@mipmap/ic_list"
             android:title="Đơn xin nghỉ" />
+        <item
+            android:id="@+id/nav_schedule"
+            android:icon="@mipmap/ic_list"
+            android:title="Giờ Làm" />
 
     </group>
 

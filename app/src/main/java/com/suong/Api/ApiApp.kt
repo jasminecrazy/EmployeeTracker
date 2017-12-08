@@ -13,9 +13,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import java.util.concurrent.TimeUnit
 
-/**
- * Created by Thu Suong on 10/8/2017.
- */
+
 interface ApiApp {
     @POST("admin/api/login")
     fun login(@Body employee: Employee): Observable<ResultInfoUser>
@@ -31,6 +29,9 @@ interface ApiApp {
 
     @GET("admin/api/absenceForm/{id}")
     fun getListDayAbsence(@Path("id") id: String): Observable<List<ResponseAbsenceForm>>
+
+    @GET("admin/api/employeeTask/{id}")
+    fun getListWorkSchedule(@Path("id") id: String): Observable<List<ResponseWorkSchedule>>
 
     companion object Factory {
         fun create(): ApiApp {

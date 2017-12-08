@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import com.cloudinary.android.MediaManager
 import com.suong.service.Myserivce
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -28,6 +29,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.setNavigationItemSelectedListener(this)
         changeFramgent(MapsActivity())
         startService()
+
+
+        var config = HashMap<String, String>()
+        config.put("cloud_name", "hcm-city")
+        config.put("api_key", "656797319255918")
+        config.put("api_secret", "ZkYkWoNlLWDBBcxM_O_0tcoRqgY")
+        MediaManager.init(this, config)
     }
 
     private fun startService() {
@@ -63,9 +71,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_location -> {
-
                 changeFramgent(MapsActivity())
-
             }
             R.id.nav_dayoff -> {
                 changeFramgent(DayOff())
@@ -75,6 +81,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_myform -> {
                 changeFramgent(ListAbsence())
+            }
+            R.id.nav_schedule -> {
+                changeFramgent(WorkSchedule())
             }
         }
 
@@ -94,7 +103,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         stopService(intent)
         super.onDestroy()
     }
-
 
 
 }

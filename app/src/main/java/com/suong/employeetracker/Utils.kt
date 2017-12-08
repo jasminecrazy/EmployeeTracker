@@ -9,9 +9,6 @@ import com.google.android.gms.maps.model.LatLng
 import java.io.IOException
 import java.util.*
 
-/**
- * Created by Thu Suong on 10/6/2017.
- */
 object Utils {
     fun isNetWorkConnnected(context: Context): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -33,7 +30,6 @@ object Utils {
             streetAddress = returnedAddress.getAddressLine(0)
 
         }
-        Log.e("add", streetAddress)
         return streetAddress
     }
 

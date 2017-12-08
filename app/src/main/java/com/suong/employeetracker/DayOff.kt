@@ -56,15 +56,14 @@ import kotlin.collections.HashMap
 
 
 @Suppress("DEPRECATION")
-/**
- * Created by Thu Suong on 10/6/2017.
- */
+
 class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
     override fun finish(str: File) {
         sendPhoto(str)
     }
 
     private lateinit var dialog: ProgressDialog
+    private lateinit var dialogSending: ProgressDialog
     private var mCamera: Camera? = null
     private var mPreview: CameraPreview? = null
     private lateinit var mMap: GoogleMap
@@ -78,6 +77,8 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
     val IEmployee by lazy {
         com.suong.Api.ApiApp.create()
     }
+    private var nameOfImage: String? = null
+    private val baseUrlImage: String = "http://res.cloudinary.com/hcm-city/image/upload/"
     //camera api 2/////////////////////////////////////////////////
 
     private var mBackgroundThread: HandlerThread? = null
@@ -115,7 +116,7 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
             // This method is called when the camera is opened.  We start camera preview here.
             mCameraOpenCloseLock.release()
             cameraDevice = camera
-            Toast.makeText(activity, "Camera open", Toast.LENGTH_LONG).show()
+          //  Toast.makeText(activity, "Camera open", Toast.LENGTH_LONG).show()
             //show image on view
             createCameraPreviewSession()
         }
@@ -653,8 +654,12 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
         //dialog
         dialog = ProgressDialog(activity)
         dialog.setMessage("Please wait")
-        dialog.setTitle("Loading")
+        dialog.setTitle("save a picture")
         dialog.setCancelable(false)
+        dialogSending = ProgressDialog(activity)
+        dialogSending.setMessage("Please wait")
+        dialogSending.setTitle("sending..")
+        dialogSending.setCancelable(false)
         //  dialog.show()
         //map
         locationManager = activity.getSystemService(android.content.Context.LOCATION_SERVICE) as LocationManager
@@ -674,13 +679,15 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
             view.tvTextTure.visibility = View.VISIBLE
             view.preview.visibility = View.GONE
         } else {
-            setOrientationDetective()
-            mCamera = getCameraInstance()
-            view.preview.visibility = View.VISIBLE
-            view.tvTextTure.visibility = View.GONE
-            // Create our Preview view and set it as the content of our activity.
-            mPreview = CameraPreview(activity, this.mCamera!!)
-            view.preview.addView(mPreview)
+            Toast.makeText(activity, "non support right now", Toast.LENGTH_SHORT).show()
+/*            //for android <6.0 use camera API not camera API2
+            *//*    setOrientationDetective()
+                mCamera = getCameraInstance()
+                view.preview.visibility = View.VISIBLE
+                view.tvTextTure.visibility = View.GONE
+                // Create our Preview view and set it as the content of our activity.
+                mPreview = CameraPreview(activity, this.mCamera!!)
+                view.preview.addView(mPreview)*/
         }
 
 
@@ -688,19 +695,16 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
         //event
         view.btnSend.setOnClickListener {
             //take a picture
-           // dialog.show()
+            // dialog.show()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                dialog.show()
                 takePicture()
             } else {
                 //    mCamera!!.takePicture(null, null, mPicture)
             }
             //init cloudinary.com
 
-            var config = HashMap<String, String>()
-            config.put("cloud_name", "hcm-city")
-            config.put("api_key", "656797319255918")
-            config.put("api_secret", "ZkYkWoNlLWDBBcxM_O_0tcoRqgY")
-            MediaManager.init(activity, config)
+
         }
         return view
     }
@@ -735,7 +739,7 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
             moveLocation(location!!)
         }
     }
-
+/*
     private fun setOrientationDetective() {
         val orientationDetective = object : OrientationDetective(activity) {
             override fun onSimpleOrientationChanged(orientation: Int) {
@@ -751,83 +755,82 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
             }
         }
         orientationDetective.enable()
-    }
+    }*/
 
-    fun getDeviceDefaultOrientation(): Int {
-        var windowManager: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        var config: Configuration = resources.configuration
-        var rotation = windowManager.defaultDisplay.rotation
-        if (((rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_180) &&
-                config.orientation == Configuration.ORIENTATION_LANDSCAPE)
-                || ((rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) &&
-                config.orientation == Configuration.ORIENTATION_PORTRAIT)) {
-            Log.e("rotation", "Landscape")
-            return Configuration.ORIENTATION_LANDSCAPE
+    /*  fun getDeviceDefaultOrientation(): Int {
+          var windowManager: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+          var config: Configuration = resources.configuration
+          var rotation = windowManager.defaultDisplay.rotation
+          if (((rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_180) &&
+                  config.orientation == Configuration.ORIENTATION_LANDSCAPE)
+                  || ((rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) &&
+                  config.orientation == Configuration.ORIENTATION_PORTRAIT)) {
+              Log.e("rotation", "Landscape")
+              return Configuration.ORIENTATION_LANDSCAPE
 
-        } else {
-            Log.e("rotation", "Portrait")
-            return Configuration.ORIENTATION_PORTRAIT
-        }
-    }
+          } else {
+              Log.e("rotation", "Portrait")
+              return Configuration.ORIENTATION_PORTRAIT
+          }
+      }*/
 
     fun sendPhoto(str: File) {
-        // sendLocation()
-        /*  imageUri = Uri.fromFile(mFile)
-          var filess = File(imageUri.toString())*/
-        imageUri = Uri.fromFile(str)
-   /*     MediaManager.get().upload(imageUri)
-                .option("3131313", "myAvatar2")
-                .callback(object : ListenerService() {
-                    override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                    }
+        dialog.cancel()
+        dialogSending.show()
+        if (checkGps() && Utils.isNetWorkConnnected(activity)) {
+            nameOfImage = "user" + System.currentTimeMillis()
+            imageUri = Uri.fromFile(str)
+            MediaManager.get().upload(imageUri)
+                    .option("public_id", nameOfImage)
+                    .option("invalidate", true)
+                    .callback(object : ListenerService() {
+                        override fun onStart(requestId: String?) {
 
-                    override fun onStart(requestId: String?) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                    }
+                        }
 
-                    override fun onBind(intent: Intent?): IBinder {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                    }
+                        override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
+                        }
 
-                    override fun onReschedule(requestId: String?, error: ErrorInfo?) {
-                        Log.e("onReschedule","onReschedule")
 
-                    }
+                        override fun onBind(intent: Intent?): IBinder? {
+                            return null
+                            //To change body of created functions use File | Settings | File Templates.
+                        }
 
-                    override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
-                        Log.e("requestId",requestId)
-                        Log.e("requestId",resultData.toString())
-                    }
+                        override fun onReschedule(requestId: String?, error: ErrorInfo?) {
 
-                    override fun onError(requestId: String?, error: ErrorInfo?) {
-                        Log.e("onError","onError")
 
-                    }
+                        }
 
-                }).dispatch()*/
-        MediaManager.get().upload(imageUri)
-                .option("3131313", "myAvatar2")
+                        override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
+                            updateLocation()
+                        }
 
-        /*      if (!checkGps() || !Utils.isNetWorkConnnected(activity)) {
-                  Toast.makeText(activity, "You need enable GPS and Internet", Toast.LENGTH_SHORT).show()
-              } else updateLocation()*/
+                        override fun onError(requestId: String?, error: ErrorInfo?) {
+                            sendPhoto(str)
+                        }
+
+                    }).dispatch()
+        } else {
+            Toast.makeText(activity, "You need enable GPS and Internet", Toast.LENGTH_SHORT).show()
+
+        }
 
 
     }
 
     /** A safe way to get an instance of the Camera object.  */
-    fun getCameraInstance(): Camera? {
-        var c: Camera? = null
-        try {
-            c = Camera.open() // attempt to get a Camera instance
-        } catch (e: Exception) {
-            // Camera is not available (in use or does not exist)
-        }
+    /*   fun getCameraInstance(): Camera? {
+           var c: Camera? = null
+           try {
+               c = Camera.open() // attempt to get a Camera instance
+           } catch (e: Exception) {
+               // Camera is not available (in use or does not exist)
+           }
 
-        return c // returns null if camera is unavailable
-    }
-
+           return c // returns null if camera is unavailable
+       }
+   */
     /* private val mPicture: Camera.PictureCallback = Camera.PictureCallback(
              { bytes: ByteArray, camera: Camera ->
                  val fileTam: File = getFile()
@@ -871,51 +874,37 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
 
     }
 
-    /* fun updateImageToFirebase() {
-
-         idImg = "user" + UUID.randomUUID()
-         var ref: StorageReference = storageReference.child("imgUser/" + idImg)
-         ref.putFile(imageUri).addOnSuccessListener {
-             Log.e("update", "Success")
-         }
-                 .addOnFailureListener(OnFailureListener {
-                     Log.e("update", "failed")
-                 })
-         updateLocation()
-     }
- */
-
     fun sendLocation() {
 
         var myAdd: String = Utils.convertAddr(LatLng(location!!.latitude, location!!.longitude), activity)
-        Log.e("address", myAdd)
         val response = IEmployee
         val id: Int = SharedPreferencesManager.getIdUser(activity)!!.toInt()
-        val userLogin = com.suong.model.sendLocation(sendEmployeess(id), location!!.longitude, location!!.latitude, myAdd, DateOfDate.getTimeGloba(), DateOfDate.getDay(), "imgUser/" + idImg)
+        var linkImage = baseUrlImage + nameOfImage + ".jpg"
+        Log.e("link image", linkImage);
+        val userLogin = com.suong.model.sendLocation(sendEmployeess(id), location!!.longitude, location!!.latitude, myAdd, DateOfDate.getTimeGloba(), DateOfDate.getDay(), linkImage)
         response.sendLocation(userLogin)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ result ->
                     Toast.makeText(activity, "send success", Toast.LENGTH_SHORT).show()
                     Log.e("send", "success")
-                    if (dialog.isShowing) {
-                        dialog.dismiss()
+                    if (dialogSending.isShowing) {
+                        dialogSending.cancel()
                     }
 
 
                 }, { error ->
                     Log.e("error", error.message)
                     Toast.makeText(activity, "send Failed", Toast.LENGTH_SHORT).show()
-                    if (dialog.isShowing) {
-                        dialog.dismiss()
+                    if (dialogSending.isShowing) {
+                        dialogSending.cancel()
                     }
                 })
-        //   refreshCamera()
     }
 
-    fun refreshCamera() {
+/*    fun refreshCamera() {
         mPreview!!.refreshCamera(mCamera!!)
-    }
+    }*/
 
     fun updateLocation() {
         if (Utils.isNetWorkConnnected(activity)) {

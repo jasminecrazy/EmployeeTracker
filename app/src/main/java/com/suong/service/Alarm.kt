@@ -19,17 +19,14 @@ import android.support.v4.app.ActivityCompat
 import android.content.Context.LOCATION_SERVICE
 
 
-/**
- * Created by Billy on 11/26/2017.
- */
+
 class Alarm : BroadcastReceiver() {
+    private var dem: Int = 0
     val IEmployee by lazy {
         com.suong.Api.ApiApp.create()
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
-
-        Toast.makeText(context, "Alarm ", Toast.LENGTH_SHORT).show()
         sendLocation(context)
     }
 
@@ -41,7 +38,6 @@ class Alarm : BroadcastReceiver() {
         }
         val location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
         val myAdd: String = Utils.convertAddr(LatLng(location!!.latitude, location.longitude), context)
-        Log.e("address", DateOfDate.getTimeGloba())
         val response = IEmployee
         val id: Int = SharedPreferencesManager.getIdUser(context)!!.toInt()
         val userLogin = com.suong.model.sendLocation(sendEmployeess(id), location.longitude, location.latitude, myAdd, DateOfDate.getTimeGloba(), DateOfDate.getDay(), "")
@@ -49,12 +45,14 @@ class Alarm : BroadcastReceiver() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ result ->
-                    Toast.makeText(context, "mapsacitivity send success", Toast.LENGTH_SHORT).show()
-
+                    Toast.makeText(context, " send location success", Toast.LENGTH_LONG).show()
+                    dem = 0
 
                 }, { error ->
-                    Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
-                    Log.e("error",error.message)
+                    dem++
+                    Toast.makeText(context, "try to send again", Toast.LENGTH_SHORT).show()
+                    if (dem <= 2)
+                        sendLocation(context)
                 })
     }
 }

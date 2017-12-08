@@ -23,9 +23,6 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-/**
- * Created by Thu Suong on 10/6/2017.
- */
 class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnItemSelectedListener {
     private lateinit var dialog: ProgressDialog
     private var listCa: List<ResponseShiftWork> = ArrayList<ResponseShiftWork>()
@@ -36,7 +33,7 @@ class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnI
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
@@ -45,7 +42,7 @@ class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnI
 
 
     override fun onDateSet(p0: DatePicker?, p1: Int, p2: Int, p3: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -79,7 +76,6 @@ class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnI
                     dialog.dismiss()
                     addDateToSpin()
                 }, { error ->
-                    Log.e("error", error.message)
                     dialog.dismiss()
                     Toast.makeText(activity, " Failed to load data", Toast.LENGTH_SHORT).show()
                 })
@@ -161,17 +157,14 @@ class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnI
             val reason: String = contentReason.text.toString()
             val fromdate: String = tvDateEnd.text.toString()
             val enddate: String = tvDateStart.text.toString()
-            Log.e("day today", DateOfDate.getDay())
             IEmployee.sendAbsense(sendAbsenseToSever(sendEmployeess(SharedPreferencesManager.getIdUser(activity)!!.toInt()), ShiftWork(CaLam), reason, DateOfDate.getDay(), DateOfDate.getTimeGloba(), false, fromdate, enddate))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ result ->
                         Toast.makeText(activity, "Success", Toast.LENGTH_SHORT).show()
-                        Log.e("success", "success")
                         dialog.dismiss()
                     }, { error ->
                         dialog.dismiss()
-                        Log.e("error", error.message)
                         Toast.makeText(activity, " Failed", Toast.LENGTH_SHORT).show()
                     })
         } else {

@@ -43,7 +43,6 @@ class Myserivce : Service() {
     }
 
     private fun startAlarm() {
-        // Set the alarm to start at 8:00 a.m.
         val calendar = Calendar.getInstance()
         calendar.setTimeInMillis(System.currentTimeMillis())
         calendar.set(Calendar.MILLISECOND, 5000)

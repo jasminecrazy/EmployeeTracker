@@ -5,13 +5,11 @@ import java.util.*
 import java.text.SimpleDateFormat
 
 
-/**
- * Created by nbhung on 10/11/2017.
- */
+
 class DateOfDate {
     companion object {
         fun getDay(): String {
-            val c = Calendar.getInstance(TimeZone.getTimeZone("GMT+7:00"))
+            val c = Calendar.getInstance()
             val year = c.get(Calendar.YEAR)
             val month = c.get(Calendar.MONTH)
             val day = c.get(Calendar.DAY_OF_MONTH)
@@ -32,7 +30,7 @@ class DateOfDate {
         }
 
         fun getTimeGloba(): String {
-            val c = Calendar.getInstance(TimeZone.getTimeZone("GMT+7:00"))
+            val c = Calendar.getInstance()
             val hour = c.get(Calendar.HOUR_OF_DAY)
             val minute = c.get(Calendar.MINUTE)
             val second = c.get(Calendar.SECOND)
@@ -45,13 +43,13 @@ class DateOfDate {
             if (minute < 10) {
                 minuteNew = "0" + minute
             } else minuteNew = minute.toString()
-            val getGlobla: String = getDay + "T" + hourNew + ":" + minuteNew + ":" + "00" + ".00+07:00"
+            val getGlobla: String = getDay + "T" + hourNew + ":" + minuteNew + ":" + "00" + ""
 
             return getGlobla
         }
 
         fun getTimeNow(): String {
-            val c = Calendar.getInstance(TimeZone.getTimeZone("GMT+7:00"))
+            val c = Calendar.getInstance()
             val hour = c.get(Calendar.HOUR_OF_DAY)
             val minute = c.get(Calendar.MINUTE)
             val second = c.get(Calendar.SECOND)

@@ -12,9 +12,6 @@ import java.io.IOException
 
 
 
-/**
- * Created by Asus on 10/22/2017.
- */
 
 open class CameraPreview(context: Context, private var mCamera: Camera) : SurfaceView(context), SurfaceHolder.Callback {
     private val CAMERA_PARAM_ORIENTATION = "orientation"
