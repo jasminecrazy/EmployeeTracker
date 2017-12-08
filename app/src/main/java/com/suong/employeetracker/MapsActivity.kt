@@ -8,23 +8,16 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import com.example.nbhung.testcallapi.DateOfDate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.suong.model.SharedPreferencesManager
-import com.suong.model.sendEmployeess
-import com.suong.model.sendLocation
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+
 
 class MapsActivity : Fragment(), OnMapReadyCallback {
 
@@ -72,14 +65,13 @@ class MapsActivity : Fragment(), OnMapReadyCallback {
             location = locationManager!!.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
             if (location != null)
                 eventUpdateLocation()
-        } else {
-            if (checkGps()) {
-                location = locationManager!!.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                if (location != null)
-                    eventUpdateLocation()
-
-            }
         }
+        if (checkGps()) {
+            location = locationManager!!.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            if (location != null)
+                eventUpdateLocation()
+        }
+
 
     }
 

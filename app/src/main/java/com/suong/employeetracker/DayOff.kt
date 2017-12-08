@@ -6,6 +6,7 @@ package com.suong.employeetracker
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -21,6 +22,7 @@ import android.os.*
 import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
@@ -30,6 +32,7 @@ import android.widget.Toast
 import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.ListenerService
+import com.cloudinary.android.callback.UploadCallback
 import com.example.nbhung.testcallapi.DateOfDate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -783,31 +786,29 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
             MediaManager.get().upload(imageUri)
                     .option("public_id", nameOfImage)
                     .option("invalidate", true)
-                    .callback(object : ListenerService() {
-                        override fun onStart(requestId: String?) {
-
-                        }
-
+                    .callback(object :ListenerService(){
                         override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
-                        }
-
-
-                        override fun onBind(intent: Intent?): IBinder? {
-                            return null
-                            //To change body of created functions use File | Settings | File Templates.
-                        }
-
-                        override fun onReschedule(requestId: String?, error: ErrorInfo?) {
-
-
                         }
 
                         override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
                             updateLocation()
                         }
 
+                        override fun onStart(requestId: String?) {
+                        }
+
                         override fun onError(requestId: String?, error: ErrorInfo?) {
-                            sendPhoto(str)
+                            dialogSending.cancel()
+                            Toast.makeText(activity, "upload image failed", Toast.LENGTH_SHORT).show()
+
+
+                        }
+
+                        override fun onBind(intent: Intent?): IBinder {
+                            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                        }
+
+                        override fun onReschedule(requestId: String?, error: ErrorInfo?) {
                         }
 
                     }).dispatch()
@@ -887,14 +888,12 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ result ->
                     Toast.makeText(activity, "send success", Toast.LENGTH_SHORT).show()
-                    Log.e("send", "success")
                     if (dialogSending.isShowing) {
                         dialogSending.cancel()
                     }
 
 
                 }, { error ->
-                    Log.e("error", error.message)
                     Toast.makeText(activity, "send Failed", Toast.LENGTH_SHORT).show()
                     if (dialogSending.isShowing) {
                         dialogSending.cancel()
