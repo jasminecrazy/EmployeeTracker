@@ -50,6 +50,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_absence.view.*
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
@@ -119,7 +120,7 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
             // This method is called when the camera is opened.  We start camera preview here.
             mCameraOpenCloseLock.release()
             cameraDevice = camera
-          //  Toast.makeText(activity, "Camera open", Toast.LENGTH_LONG).show()
+            //  Toast.makeText(activity, "Camera open", Toast.LENGTH_LONG).show()
             //show image on view
             createCameraPreviewSession()
         }
@@ -266,7 +267,41 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
 
                 }
             }
+            saveBitmapToFile(mFile)
             myClick.finish(mFile)
+        }
+
+        fun saveBitmapToFile(file: File): File? {
+            try {
+                // BitmapFactory options to downsize the image
+                var o = BitmapFactory.Options()
+                o.inJustDecodeBounds = true
+                o.inSampleSize = 6
+                // factor of downsizing the image
+                var inputStream = FileInputStream(file)
+                //Bitmap selectedBitmap = null;
+                BitmapFactory.decodeStream(inputStream, null, o)
+                inputStream.close()
+                // The new size we want to scale to
+                var REQUIRED_SIZE = 75
+                // Find the correct scale value. It should be the power of 2.
+                var scale = 1
+                while ((o.outWidth / scale / 2 >= REQUIRED_SIZE && o.outHeight / scale / 2 >= REQUIRED_SIZE)) {
+                    scale *= 2
+                }
+                var o2 = BitmapFactory.Options()
+                o2.inSampleSize = scale
+                inputStream = FileInputStream(file)
+                var selectedBitmap = BitmapFactory.decodeStream(inputStream, null, o2)
+                inputStream.close()
+                // here i override the original image file
+                file.createNewFile()
+                var outputStream = FileOutputStream(file)
+                selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                return file
+            } catch (e: Exception) {
+                return null
+            }
         }
 
     }
@@ -652,7 +687,7 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
     ///////////////////////////
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = layoutInflater.inflate(R.layout.fragment_absence, container, false)
-        //set setOrientationDetective
+
 
         //dialog
         dialog = ProgressDialog(activity)
@@ -663,15 +698,11 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
         dialogSending.setMessage("Please wait")
         dialogSending.setTitle("sending..")
         dialogSending.setCancelable(false)
-        //  dialog.show()
+
         //map
         locationManager = activity.getSystemService(android.content.Context.LOCATION_SERVICE) as LocationManager
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
-        //
-        //fiebase
-        /*    storage = FirebaseStorage.getInstance()
-            storageReference = storage.reference*/
         //
 
 
@@ -742,40 +773,7 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
             moveLocation(location!!)
         }
     }
-/*
-    private fun setOrientationDetective() {
-        val orientationDetective = object : OrientationDetective(activity) {
-            override fun onSimpleOrientationChanged(orientation: Int) {
-                if (mPreview != null && mCamera != null) {
-                    // this send rotation count to camera surface object
-                    mPreview!!.setOrientationDetective(orientation)
-                    // then call to reset param to Camera object
-                    mPreview!!.refreshCamera(mCamera!!)
 
-                    mPreview!!.setDefaultOrientation(getDeviceDefaultOrientation())
-
-                }
-            }
-        }
-        orientationDetective.enable()
-    }*/
-
-    /*  fun getDeviceDefaultOrientation(): Int {
-          var windowManager: WindowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-          var config: Configuration = resources.configuration
-          var rotation = windowManager.defaultDisplay.rotation
-          if (((rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_180) &&
-                  config.orientation == Configuration.ORIENTATION_LANDSCAPE)
-                  || ((rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) &&
-                  config.orientation == Configuration.ORIENTATION_PORTRAIT)) {
-              Log.e("rotation", "Landscape")
-              return Configuration.ORIENTATION_LANDSCAPE
-
-          } else {
-              Log.e("rotation", "Portrait")
-              return Configuration.ORIENTATION_PORTRAIT
-          }
-      }*/
 
     fun sendPhoto(str: File) {
         dialog.cancel()
@@ -786,7 +784,7 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
             MediaManager.get().upload(imageUri)
                     .option("public_id", nameOfImage)
                     .option("invalidate", true)
-                    .callback(object :ListenerService(){
+                    .callback(object : ListenerService() {
                         override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
                         }
 
@@ -799,7 +797,7 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
 
                         override fun onError(requestId: String?, error: ErrorInfo?) {
                             dialogSending.cancel()
-                            Toast.makeText(activity, "upload image failed", Toast.LENGTH_SHORT).show()
+                            showDialog()
 
 
                         }
@@ -849,6 +847,16 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
 
      )
  */
+    fun showDialog() {
+        val dialogBuilder = android.app.AlertDialog.Builder(activity)
+        dialogBuilder.setTitle("notify!")
+        dialogBuilder.setMessage("upload image failed")
+        dialogBuilder.setPositiveButton("Ok", DialogInterface.OnClickListener { dialog, whichButton ->
+        })
+        val b = dialogBuilder.create()
+        b.show()
+    }
+
     @SuppressLint("SimpleDateFormat")
     fun getFile(): File {
         val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "/CameraDemo")
@@ -881,7 +889,6 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
         val response = IEmployee
         val id: Int = SharedPreferencesManager.getIdUser(activity)!!.toInt()
         var linkImage = baseUrlImage + nameOfImage + ".jpg"
-        Log.e("link image", linkImage);
         val userLogin = com.suong.model.sendLocation(sendEmployeess(id), location!!.longitude, location!!.latitude, myAdd, DateOfDate.getTimeGloba(), DateOfDate.getDay(), linkImage)
         response.sendLocation(userLogin)
                 .subscribeOn(Schedulers.io())

@@ -1,6 +1,8 @@
 package com.suong.employeetracker
 
+import android.app.AlertDialog
 import android.app.ProgressDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.location.LocationManager
 import android.os.Bundle
@@ -90,5 +92,7 @@ class LoginActivity : AppCompatActivity() {
     fun checkGps(): Boolean {
         return locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
+
+
 
 }
