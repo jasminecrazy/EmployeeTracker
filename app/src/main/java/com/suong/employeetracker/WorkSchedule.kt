@@ -62,7 +62,6 @@ class WorkSchedule : Fragment() {
 
                 }, { error ->
                     dialog.cancel()
-                    Log.e("ádmjk", error.message)
                     Toast.makeText(activity, "error", Toast.LENGTH_SHORT).show()
 
                 })

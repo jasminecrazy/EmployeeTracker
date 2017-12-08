@@ -72,14 +72,13 @@ class MapsActivity : Fragment(), OnMapReadyCallback {
             location = locationManager!!.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
             if (location != null)
                 eventUpdateLocation()
-        } else {
-            if (checkGps()) {
-                location = locationManager!!.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                if (location != null)
-                    eventUpdateLocation()
-
-            }
         }
+        if (checkGps()) {
+            location = locationManager!!.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            if (location != null)
+                eventUpdateLocation()
+        }
+
 
     }
 
