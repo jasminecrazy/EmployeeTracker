@@ -36,8 +36,7 @@ class MapsActivity : Fragment(), OnMapReadyCallback {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         (childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
         dialog = ProgressDialog(activity)
-        dialog!!.setMessage("Please wait....")
-        dialog!!.setTitle("Loading")
+        dialog!!.setMessage("Đang tải.....")
         dialog!!.setCancelable(false)
         dialog!!.show()
         return view

@@ -37,11 +37,10 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         dialog = ProgressDialog(this)
-        dialog.setMessage("Please wait")
-        dialog.setTitle("Loading")
+        dialog.setMessage("Đang đăng nhập...")
         dialog.setCancelable(false)
         locationManager = getSystemService(android.content.Context.LOCATION_SERVICE) as LocationManager
-        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.INTERNET, android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA), 123)
+        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.INTERNET, android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA,android.Manifest.permission.WAKE_LOCK,android.Manifest.permission.RECEIVE_BOOT_COMPLETED,android.Manifest.permission.VIBRATE), 123)
         btn_login.setOnClickListener {
             if (Utils.isNetWorkConnnected(applicationContext)) {
                 if (checkGps()) {
@@ -49,15 +48,15 @@ class LoginActivity : AppCompatActivity() {
                         callApi(edt_name.text.toString(), edt_password.text.toString())
                         dialog.show()
                     } else {
-                        Toast.makeText(applicationContext, "wrong pass or email", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, "sai mật khẩu hoặc email", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(applicationContext, "please enable GPS ", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "cần mở GPS ", Toast.LENGTH_SHORT).show()
 
                 }
 
             } else {
-                Toast.makeText(applicationContext, "no connect internet", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Không Có Kết Nối Internet", Toast.LENGTH_SHORT).show()
             }
 
         }
@@ -73,13 +72,14 @@ class LoginActivity : AppCompatActivity() {
                 .subscribe({ result ->
                     SharedPreferencesManager.setIdUser(applicationContext, result.id.toString())
                     dialog.dismiss()
-                    Toast.makeText(applicationContext, "Login Success", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Đăng Nhập Thành Công", Toast.LENGTH_SHORT).show()
 
                     startActivity()
                     dialog.dismiss()
+                    finish()
 
                 }, { error ->
-                    Toast.makeText(applicationContext, "Login Failed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Đăng Nhập Thất Bại", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()
                 })
     }

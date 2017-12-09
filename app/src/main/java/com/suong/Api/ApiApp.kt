@@ -21,6 +21,9 @@ interface ApiApp {
     @POST("admin/api/location")
     fun sendLocation(@Body location: sendLocation): Observable<ResponseBody>
 
+    @POST("admin/api/history")
+    fun sendLocationHistory(@Body location: sendLocation): Observable<ResponseBody>
+
     @POST("admin/api/absence")
     fun sendAbsense(@Body senabsense: sendAbsenseToSever): Observable<ResponseBody>
 
@@ -32,6 +35,9 @@ interface ApiApp {
 
     @GET("admin/api/employeeTask/{id}")
     fun getListWorkSchedule(@Path("id") id: String): Observable<List<ResponseWorkSchedule>>
+
+    @GET("admin/api/getTask/{workday}/{id}")
+    fun getListWorkSheculeFromDate(@Path("workday") workday: String, @Path("id") id: String): Observable<List<ResponseWorkSchedule>>
 
     companion object Factory {
         fun create(): ApiApp {

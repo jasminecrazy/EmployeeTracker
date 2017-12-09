@@ -25,13 +25,15 @@
         android:required="true" />
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="andoid:icon">
+        android:fullBackupContent="@xml/my_backup_rules"
+        tools:replace="android:icon,android:fullBackupContent">
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -53,20 +55,28 @@
             </intent-filter>
         </activity>
         <activity
+            android:alwaysRetainTaskState="true"
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme" />
-        <activity android:name=".WorkSchedule" />
-
         <service
             android:name="com.suong.service.Myserivce"
+            android:enabled="true"
+            android:exported="true"
             android:process=":your_service"
             android:stopWithTask="false" />
 
         <receiver
-            android:stopWithTask="true"
             android:name="com.suong.service.Alarm"
-            android:process=":remote" />
+            android:enabled="true"
+            android:exported="true"
+            android:process=":remote">
+            <intent-filter android:priority="1000">
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

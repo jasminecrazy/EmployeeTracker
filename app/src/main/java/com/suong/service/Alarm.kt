@@ -19,7 +19,6 @@ import android.support.v4.app.ActivityCompat
 import android.content.Context.LOCATION_SERVICE
 
 
-
 class Alarm : BroadcastReceiver() {
     private var dem: Int = 0
     val IEmployee by lazy {
@@ -27,6 +26,7 @@ class Alarm : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
+        Log.e("onReceive", "onReceive")
         sendLocation(context)
     }
 
@@ -45,12 +45,14 @@ class Alarm : BroadcastReceiver() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ result ->
-                    Toast.makeText(context, " send location success", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Gửi địa điểm thành công", Toast.LENGTH_LONG).show()
+                    Log.e("send location success", "")
                     dem = 0
 
                 }, { error ->
                     dem++
-                    Toast.makeText(context, "try to send again", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Gửi lại", Toast.LENGTH_SHORT).show()
+                    Log.e("send location success", "")
                     if (dem <= 2)
                         sendLocation(context)
                 })

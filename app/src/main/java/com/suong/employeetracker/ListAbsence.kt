@@ -27,8 +27,7 @@ class ListAbsence : Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = layoutInflater.inflate(R.layout.fragment_myform, container, false)
         dialog = ProgressDialog(activity)
-        dialog.setMessage("Please wait")
-        dialog.setTitle("Loading")
+        dialog.setMessage("Vui Lòng đợi")
         dialog.setCancelable(false)
         getListAbsence()
         return view
@@ -43,7 +42,7 @@ class ListAbsence : Fragment() {
                     /*Log.e("result", result.size.toString())
                     Log.e("result", result.get(0).toString())
                     Log.e("result", result.get(1).toString())*/
-                    Toast.makeText(activity, " Success", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, " Thành Công ", Toast.LENGTH_SHORT).show()
                     mList.addAll(result)
                     if (mList.size != 0) {
                         showList()
@@ -52,7 +51,7 @@ class ListAbsence : Fragment() {
 
                 }, { error ->
                     dialog.dismiss()
-                    Toast.makeText(activity, " Failed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, " Thất Bại", Toast.LENGTH_SHORT).show()
                 })
     }
 

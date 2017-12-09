@@ -62,12 +62,17 @@ import kotlin.collections.HashMap
 @Suppress("DEPRECATION")
 
 class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
+
     override fun finish(str: File) {
         sendPhoto(str)
     }
 
-    private lateinit var dialog: ProgressDialog
-    private lateinit var dialogSending: ProgressDialog
+    object ShowDialog {
+        lateinit var dialog: ProgressDialog
+        lateinit var dialogSending: ProgressDialog
+    }
+
+
     private var mCamera: Camera? = null
     private var mPreview: CameraPreview? = null
     private lateinit var mMap: GoogleMap
@@ -228,7 +233,7 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
         } catch (e: NullPointerException) {
             // Currently an NPE is thrown when the Camera2API is used but not supported on the
             // device this code runs.
-            Toast.makeText(activity, "not supported on the device", Toast.LENGTH_LONG).show()
+            Toast.makeText(activity, "điện thoại không được hỗ trợ", Toast.LENGTH_LONG).show()
         }
 
     }
@@ -542,7 +547,7 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
 
                         override fun onConfigureFailed(
                                 cameraCaptureSession: CameraCaptureSession) {
-                            Toast.makeText(activity, "Failed", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(activity, "Thiết lập camera Thất bại", Toast.LENGTH_SHORT).show()
                         }
                     }, null)
         } catch (e: CameraAccessException) {
@@ -690,14 +695,12 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
 
 
         //dialog
-        dialog = ProgressDialog(activity)
-        dialog.setMessage("Please wait")
-        dialog.setTitle("save a picture")
-        dialog.setCancelable(false)
-        dialogSending = ProgressDialog(activity)
-        dialogSending.setMessage("Please wait")
-        dialogSending.setTitle("sending..")
-        dialogSending.setCancelable(false)
+        ShowDialog.dialog = ProgressDialog(activity)
+        ShowDialog.dialog.setMessage("Vui Lòng Đợi")
+        ShowDialog.dialog.setCancelable(false)
+        ShowDialog.dialogSending = ProgressDialog(activity)
+        ShowDialog.dialogSending.setMessage("Vui Lòng Đợi")
+        ShowDialog.dialogSending.setCancelable(false)
 
         //map
         locationManager = activity.getSystemService(android.content.Context.LOCATION_SERVICE) as LocationManager
@@ -713,7 +716,7 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
             view.tvTextTure.visibility = View.VISIBLE
             view.preview.visibility = View.GONE
         } else {
-            Toast.makeText(activity, "non support right now", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, "không hỗ trợ", Toast.LENGTH_SHORT).show()
 /*            //for android <6.0 use camera API not camera API2
             *//*    setOrientationDetective()
                 mCamera = getCameraInstance()
@@ -731,7 +734,7 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
             //take a picture
             // dialog.show()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                dialog.show()
+                ShowDialog.dialog.show()
                 takePicture()
             } else {
                 //    mCamera!!.takePicture(null, null, mPicture)
@@ -762,12 +765,12 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
 
             return
         }
-        if (dialog.isShowing) {
-            dialog.dismiss()
+        if (ShowDialog.dialog.isShowing) {
+            ShowDialog.dialog.dismiss()
         }
         mMap.isMyLocationEnabled = true
         if (!checkGps() || !Utils.isNetWorkConnnected(activity)) {
-            Toast.makeText(activity, "You need enable GPS and Internet", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, "Cần mở GPS và Internet", Toast.LENGTH_SHORT).show()
         } else {
             location = locationManager!!.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
             moveLocation(location!!)
@@ -776,8 +779,8 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
 
 
     fun sendPhoto(str: File) {
-        dialog.cancel()
-        dialogSending.show()
+        ShowDialog.dialog.cancel()
+        Toast.makeText(activity, "đang tải ảnh lên ", Toast.LENGTH_LONG).show()
         if (checkGps() && Utils.isNetWorkConnnected(activity)) {
             nameOfImage = "user" + System.currentTimeMillis()
             imageUri = Uri.fromFile(str)
@@ -796,7 +799,6 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
                         }
 
                         override fun onError(requestId: String?, error: ErrorInfo?) {
-                            dialogSending.cancel()
                             showDialog()
 
 
@@ -811,7 +813,7 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
 
                     }).dispatch()
         } else {
-            Toast.makeText(activity, "You need enable GPS and Internet", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, "Cần mở GPS và Internet", Toast.LENGTH_SHORT).show()
 
         }
 
@@ -849,8 +851,8 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
  */
     fun showDialog() {
         val dialogBuilder = android.app.AlertDialog.Builder(activity)
-        dialogBuilder.setTitle("notify!")
-        dialogBuilder.setMessage("upload image failed")
+        dialogBuilder.setTitle("Thông báo")
+        dialogBuilder.setMessage("tải hình thất bại")
         dialogBuilder.setPositiveButton("Ok", DialogInterface.OnClickListener { dialog, whichButton ->
         })
         val b = dialogBuilder.create()
@@ -890,27 +892,23 @@ class DayOff : Fragment(), OnMapReadyCallback, OnclickFinish {
         val id: Int = SharedPreferencesManager.getIdUser(activity)!!.toInt()
         var linkImage = baseUrlImage + nameOfImage + ".jpg"
         val userLogin = com.suong.model.sendLocation(sendEmployeess(id), location!!.longitude, location!!.latitude, myAdd, DateOfDate.getTimeGloba(), DateOfDate.getDay(), linkImage)
-        response.sendLocation(userLogin)
+        response.sendLocationHistory(userLogin)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ result ->
-                    Toast.makeText(activity, "send success", Toast.LENGTH_SHORT).show()
-                    if (dialogSending.isShowing) {
-                        dialogSending.cancel()
-                    }
-
+                    Toast.makeText(activity, "Gửi Thành Công", Toast.LENGTH_SHORT).show()
 
                 }, { error ->
-                    Toast.makeText(activity, "send Failed", Toast.LENGTH_SHORT).show()
-                    if (dialogSending.isShowing) {
-                        dialogSending.cancel()
-                    }
+                    Toast.makeText(activity, "Gửi Thất Bại", Toast.LENGTH_SHORT).show()
                 })
+
+
     }
 
-/*    fun refreshCamera() {
-        mPreview!!.refreshCamera(mCamera!!)
-    }*/
+    /*    fun refreshCamera() {
+            mPreview!!.refreshCamera(mCamera!!)
+        }*/
+
 
     fun updateLocation() {
         if (Utils.isNetWorkConnnected(activity)) {

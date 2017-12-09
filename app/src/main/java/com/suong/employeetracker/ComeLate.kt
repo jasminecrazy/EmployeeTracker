@@ -48,8 +48,7 @@ class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnI
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view: View = layoutInflater.inflate(R.layout.fragment_comelate, container, false)
         dialog = ProgressDialog(activity)
-        dialog.setMessage("Please wait")
-        dialog.setTitle("Loading")
+        dialog.setMessage("Vui lòng đợi...")
         dialog.setCancelable(false)
         dialog.show()
         loadShiftWork()
@@ -77,7 +76,7 @@ class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnI
                     addDateToSpin()
                 }, { error ->
                     dialog.dismiss()
-                    Toast.makeText(activity, " Failed to load data", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, " Lỗi trong quá trình tải dữ liệu", Toast.LENGTH_SHORT).show()
                 })
     }
 
@@ -105,7 +104,7 @@ class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnI
                         if (chooseDay.time >= toDay.time) {
                             tvDateStart.text = str
                         } else {
-                            Toast.makeText(activity, "Cant choose old day", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(activity, "chọn ngày không hợp lệ", Toast.LENGTH_SHORT).show()
                         }
                     } else {
                         val spToday = SimpleDateFormat("yyyy-MM-dd")
@@ -115,7 +114,7 @@ class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnI
                         if (dayEnd.time >= dayStart.time) {
                             tvDateStart.text = str
                         } else {
-                            Toast.makeText(activity, "you need change day end first", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(activity, "cần thay đổi ngày kết thúc trước", Toast.LENGTH_SHORT).show()
                         }
                     }
 
@@ -132,7 +131,7 @@ class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnI
         val datePickerDialog = DatePickerDialog(activity,
                 DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                     if (tvDateStart.text.toString().equals("")) {
-                        Toast.makeText(activity, "you should choose day start first", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, "chọn ngày bắt đầu trước", Toast.LENGTH_SHORT).show()
                     } else {
 
                         val spToday = SimpleDateFormat("yyyy-MM-dd")
@@ -142,7 +141,7 @@ class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnI
                         if (dayEnd.time >= dayStart.time) {
                             tvDateEnd.text = str
                         } else {
-                            Toast.makeText(activity, "Cant choose old day ", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(activity, "chọn ngày không hợp lệ ", Toast.LENGTH_SHORT).show()
 
 
                         }
@@ -161,14 +160,14 @@ class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnI
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ result ->
-                        Toast.makeText(activity, "Success", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, "Thành Công", Toast.LENGTH_SHORT).show()
                         dialog.dismiss()
                     }, { error ->
                         dialog.dismiss()
-                        Toast.makeText(activity, " Failed", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, " Thất Bại", Toast.LENGTH_SHORT).show()
                     })
         } else {
-            Toast.makeText(activity, "Can be empty", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, "Không được để trống", Toast.LENGTH_SHORT).show()
         }
 
     }

@@ -139,30 +139,6 @@ open class CameraPreview(context: Context, private var mCamera: Camera) : Surfac
         return imageRotate
     }
 
-  /*  @SuppressLint("ObsoleteSdkInt")
-    protected fun configureCameraParameters(cameraParams: Camera.Parameters, portrait: Boolean) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.FROYO) { // for 2.1 and before
-            if (portrait) {
-                cameraParams.set(CAMERA_PARAM_ORIENTATION, CAMERA_PARAM_PORTRAIT)
-            } else {
-                cameraParams.set(CAMERA_PARAM_ORIENTATION, CAMERA_PARAM_LANDSCAPE)
-            }
-        } else { // for 2.2 and later
-            val angle: Int
-            var activity: Activity = context as Activity
-            val display = activity.windowManager.defaultDisplay
-            angle = when (display.rotation) {
-                ROTATION_0 -> 90 // This is camera orientation
-                ROTATION_90 -> 0
-                ROTATION_180 -> 270
-                ROTATION_270 -> 180
-                else -> 90
-            }
-            Log.v("LOG_TAG", "angle: " + angle)
-            mCamera.setDisplayOrientation(angle)
-        }
-    }*/
-
     fun setCamera(camera: Camera) {
 
         //method to set a camera instance
