@@ -25,7 +25,8 @@
             android:gravity="center"
             android:hint="@string/hint_username"
             android:inputType="textNoSuggestions|textVisiblePassword"
-            android:text="Jackson15" />
+            android:text="Jackson15"
+            android:textSize="18sp" />
 
         <EditText
             android:id="@+id/edt_password"
@@ -36,7 +37,8 @@
             android:gravity="center"
             android:hint="@string/hint_password"
             android:inputType="textPassword"
-            android:text="123456" />
+            android:text="123456"
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/btn_login"
@@ -45,18 +47,18 @@
             android:layout_margin="10dp"
             android:background="@drawable/button_background"
             android:text="@string/login"
-            android:textColor="#FDFDFE" />
+            android:textColor="#FDFDFE"
+            android:textSize="16sp" />
 
         <Button
             android:id="@+id/btn_forgotpass"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-
             android:background="@null"
             android:text="@string/lbl_forgot_password"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
-            android:textSize="15dp" />
+            android:textSize="16sp" />
 
 
     </LinearLayout>

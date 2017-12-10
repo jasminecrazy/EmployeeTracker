@@ -27,12 +27,13 @@
         android:layout_marginTop="30dp"
         android:orientation="horizontal">
         <TextView
+            android:textSize="18sp"
+            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Lý do"
             android:layout_marginRight="50dp"
             android:textColor="@color/black"
-            android:textSize="20sp"
             />
         <EditText
             android:id="@+id/contentReason"
@@ -47,7 +48,7 @@
             android:minLines="6"
             android:padding="10dp"
             android:scrollbars="horizontal"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -66,15 +67,18 @@
             android:gravity="center"
             android:textColor="@color/black"
             android:text="Từ Ngày : "
-            android:textSize="20sp" />
+            android:textSize="18sp"
+            android:textStyle="bold"
+            />
 
         <TextView
+
             android:id="@+id/tvDateStart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:hint="click chon ngày"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -88,13 +92,13 @@
         android:orientation="horizontal">
 
         <TextView
+            android:textSize="18sp"
+            android:textStyle="bold"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft = "15dp"
-
             android:textColor="@color/black"
-            android:text="Tên ca "
-            android:textSize="20sp" />
+            android:text="Tên ca " />
 
         <Spinner
             android:id="@+id/spinCaLam"
@@ -115,13 +119,14 @@
         android:orientation="horizontal">
 
         <TextView
+            android:textSize="18sp"
+            android:textStyle="bold"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginLeft="9dp"
             android:textColor="@color/black"
-            android:text="Đến Ngày : "
-            android:textSize="20sp" />
+            android:text="Đến Ngày : " />
 
         <TextView
             android:id="@+id/tvDateEnd"
@@ -129,19 +134,18 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:hint="click chon ngày"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
     </LinearLayout>
 
     <Button
-        android:layout_marginTop="30dp"
+        android:textSize="18sp"
+        android:layout_marginTop="40dp"
         android:id="@+id/btnSend"
         android:layout_width="200dp"
         android:layout_height="70dp"
         android:background="@drawable/button_background"
         android:textColor="#FDFDFE"
         android:layout_below="@id/ll1"
-        android:textSize="20sp"
-
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
         android:text="Gửi" />

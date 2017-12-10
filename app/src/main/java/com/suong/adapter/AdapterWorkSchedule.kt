@@ -12,11 +12,11 @@ import com.suong.model.ResponseWorkSchedule
 import java.security.AccessControlContext
 
 
-class AdapterWorkSchedule(private val context: Context, list: MutableList<ResponseShiftWork>) : BaseAdapter() {
-    private var list = ArrayList<ResponseShiftWork>()
+class AdapterWorkSchedule(private val context: Context, list: MutableList<ResponseWorkSchedule>) : BaseAdapter() {
+    private var list = ArrayList<ResponseWorkSchedule>()
 
     init {
-        this.list = list as ArrayList<ResponseShiftWork>
+        this.list = list as ArrayList<ResponseWorkSchedule>
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
@@ -25,10 +25,12 @@ class AdapterWorkSchedule(private val context: Context, list: MutableList<Respon
         val Title: TextView = view.findViewById(R.id.tvTitle)
         val TvStartTime: TextView = view.findViewById(R.id.tvStartTime)
         val TvEndTime: TextView = view.findViewById(R.id.tvEndTime)
+        val TvLocation: TextView = view.findViewById(R.id.tvLocation)
 
-        Title.text = list.get(position).shiftworkName
-        TvStartTime.text = list.get(position).startTime
-        TvEndTime.text = list.get(position).endTime
+        Title.text = list.get(position).shiftwork.shiftworkName
+        TvStartTime.text = list.get(position).shiftwork.startTime
+        TvEndTime.text = list.get(position).shiftwork.endTime
+        TvLocation.text = list.get(position).location
         return view
     }
 

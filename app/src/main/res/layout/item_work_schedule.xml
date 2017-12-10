@@ -25,8 +25,8 @@
         <TextView
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:text="Start Time :"
-            android:textSize="20sp"
+            android:text="Bắt   đầu :"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
@@ -47,12 +47,34 @@
         <TextView
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:text="End   Time :"
-            android:textSize="20sp"
+            android:text="Kết Thúc :"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvEndTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="06:30:00"
+            android:textSize="18sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Địa điểm :"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:maxLines="3"
+            android:id="@+id/tvLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="06:30:00"

@@ -17,6 +17,7 @@ import com.suong.adapter.AdapterItemListView
 import com.suong.adapter.AdapterWorkSchedule
 import com.suong.model.ResponseAbsenceForm
 import com.suong.model.ResponseShiftWork
+import com.suong.model.ResponseWorkSchedule
 import com.suong.model.SharedPreferencesManager
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -30,7 +31,7 @@ import java.util.*
 class WorkSchedule : Fragment() {
     private lateinit var dialog: ProgressDialog
     private var adapterWorkSchedule: AdapterWorkSchedule? = null
-    private var mList: MutableList<ResponseShiftWork> = ArrayList<ResponseShiftWork>()
+    private var mList: MutableList<ResponseWorkSchedule> = ArrayList<ResponseWorkSchedule>()
 
     val IEmployee by lazy {
         com.suong.Api.ApiApp.create()
@@ -41,6 +42,7 @@ class WorkSchedule : Fragment() {
         dialog = ProgressDialog(activity)
         dialog.setMessage("Vui lòng đợi...")
         dialog.setCancelable(false)
+        view.tvChooseDate.text = DateOfDate.getDay()
         view.tvChooseDate.setOnClickListener {
             openCalendaStart()
         }
@@ -63,17 +65,8 @@ class WorkSchedule : Fragment() {
         val day = c.get(Calendar.DAY_OF_MONTH)
         val datePickerDialog = DatePickerDialog(activity,
                 DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-
-                    val spToday = SimpleDateFormat("yyyy-MM-dd")
-                    var toDay = spToday.parse(DateOfDate.getDay())
                     var str: String = year.toString() + "-" + (monthOfYear + 1) + "-" + dayOfMonth.toString()
-                    var chooseDay = spToday.parse(str)
-                    if (chooseDay.time >= toDay.time) {
-                        tvChooseDate.text = str
-                        Toast.makeText(activity, tvChooseDate.text.toString(), Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(activity, "chọn ngày không hợp lệ", Toast.LENGTH_SHORT).show()
-                    }
+                    tvChooseDate.text = str
                 }, years, month, day)
         datePickerDialog.show()
     }
@@ -86,9 +79,10 @@ class WorkSchedule : Fragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ result ->
                     dialog.cancel()
-                    for (i in result.indices) {
-                        mList.add(result.get(i).shiftwork)
-                    }
+                    /*  for (i in result.indices) {
+                          mList.add(result.get(i).shiftwork)
+                      }*/
+                    mList.addAll(result)
                     Toast.makeText(activity, "Thành Công", Toast.LENGTH_SHORT).show()
                     if (mList.isNotEmpty()) {
                         showList()

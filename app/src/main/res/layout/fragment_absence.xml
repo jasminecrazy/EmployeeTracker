@@ -13,7 +13,7 @@
         android:orientation="horizontal">
 
         <Button
-
+            android:textSize="18sp"
             android:id="@+id/btnSend"
             android:layout_width="350px"
             android:layout_height="wrap_content"
