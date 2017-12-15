@@ -6,6 +6,7 @@ data class sendAbsenseToSever(val employee:sendEmployeess,
                               val reason:String,
                               val sendDate:String,
                               val timeSend:String?,
-                              val status:Boolean,
+                              val status:Int,
                               val fromDate:String?,
-                              val toDate:String?)
+                              val toDate:String?,
+                              val lydo:String?)

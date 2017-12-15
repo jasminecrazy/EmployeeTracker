@@ -150,13 +150,13 @@ class ComeLate : Fragment(), DatePickerDialog.OnDateSetListener, AdapterView.OnI
                 }, years, month, day)
         datePickerDialog.show()
     }
-
     fun sendAbsense() {
+
         if (tvDateStart != null && contentReason != null && tvDateStart.text != null && contentReason.text != null) {
             val reason: String = contentReason.text.toString()
-            val fromdate: String = tvDateEnd.text.toString()
-            val enddate: String = tvDateStart.text.toString()
-            IEmployee.sendAbsense(sendAbsenseToSever(sendEmployeess(SharedPreferencesManager.getIdUser(activity)!!.toInt()), ShiftWork(CaLam), reason, DateOfDate.getDay(), DateOfDate.getTimeGloba(), false, fromdate, enddate))
+            val fromdate: String = tvDateStart.text.toString()
+            val enddate: String = tvDateEnd.text.toString()
+            IEmployee.sendAbsense(sendAbsenseToSever(sendEmployeess(SharedPreferencesManager.getIdUser(activity)!!.toInt()), ShiftWork(CaLam), reason, DateOfDate.getDay(), DateOfDate.getTimeGloba(), 0, fromdate, enddate,""))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ result ->
