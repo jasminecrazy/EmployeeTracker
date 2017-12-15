@@ -75,7 +75,6 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(applicationContext, "Đăng Nhập Thành Công", Toast.LENGTH_SHORT).show()
 
                     startActivity()
-                    dialog.dismiss()
                     finish()
 
                 }, { error ->

@@ -1,24 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="90dp"
     android:orientation="horizontal"
-    android:padding="20dp">
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp">
 
-    <TextView
-        android:textSize="16sp"
-        android:id="@+id/tvNgayGui"
-        android:layout_width="120dp"
+    <RelativeLayout
+        android:id="@+id/relLayout"
+        android:visibility="visible"
+        android:layout_alignParentEnd="true"
+        android:layout_width="190dp"
         android:layout_height="match_parent"
-        android:layout_marginRight="5dp"
-        android:gravity="center"
-        android:text="2017-10-27" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv111"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lý Do"
+            android:textSize="14sp" />
+
+        <TextView
+            android:text="tôi bị đau bụng nên không đi làm được"
+            android:textSize="14sp"
+            android:layout_below="@id/tv111"
+            android:id="@+id/tvLyDo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/txt_border"
+            android:gravity="left"
+            android:inputType="textMultiLine|textNoSuggestions"
+            android:lines="3"
+            android:maxLines="6"
+            android:padding="10dp"
+            android:scrollbars="horizontal" />
+    </RelativeLayout>
 
     <TextView
-        android:textSize="16sp"
+        android:paddingLeft="5dp"
+        android:id="@+id/tvNgayGui"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_marginEnd="5dp"
+        android:gravity="center"
+        android:text="2017-10-27"
+        android:textSize="14sp" />
+
+    <TextView
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:layout_toEndOf="@id/tvNgayGui"
+        android:layout_toStartOf="@id/relLayout"
         android:id="@+id/tvTrangThai"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="Chưa Duyệt" />
-</LinearLayout>
+        android:layout_height="90dp"
+        android:text="Đã Duyệt"
+        android:textSize="14sp" />
+
+</RelativeLayout>

@@ -39,15 +39,14 @@ class ListAbsence : Fragment() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ result ->
-                    /*Log.e("result", result.size.toString())
-                    Log.e("result", result.get(0).toString())
-                    Log.e("result", result.get(1).toString())*/
+                    if (dialog.isShowing) {
+                        dialog.dismiss()
+                    }
                     Toast.makeText(activity, " Thành Công ", Toast.LENGTH_SHORT).show()
                     mList.addAll(result)
                     if (mList.size != 0) {
                         showList()
                     }
-
 
                 }, { error ->
                     dialog.dismiss()
@@ -56,9 +55,7 @@ class ListAbsence : Fragment() {
     }
 
     fun showList() {
-        if (dialog.isShowing) {
-            dialog.dismiss()
-        }
+
         adapterItemListView = AdapterItemListView(activity, mList)
         view!!.findViewById<ListView>(R.id.myListView).adapter = adapterItemListView
     }

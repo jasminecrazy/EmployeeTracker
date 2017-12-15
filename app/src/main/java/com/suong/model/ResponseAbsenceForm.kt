@@ -5,5 +5,6 @@ data class ResponseAbsenceForm(
         val id: Int,
         val sendDate: String,
         val reason: String,
-        val status: Boolean
+        val status: Int,
+        val lydo: String
 )
